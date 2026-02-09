@@ -6,7 +6,7 @@ Sistem Integrated Bundle Of Perinatal CarE untuk RSUD RTN Sidoarjo.
 
 - **Halaman Login**: Autentikasi pengguna dengan opsi "Ingat Saya"
 - **Dashboard**: Tampilan utama dengan statistik dan modul perawatan perinatal
-- **Modul PERISTI BAYI**: Manajemen peristiwa bayi
+- **Modul PERISTI BAYI**: Manajemen data peristi bayi
 - **Modul MNE BAYI**: Manajemen Neonatal Early Warning
 - **Quality Improvement**: Analisis dan peningkatan kualitas
 

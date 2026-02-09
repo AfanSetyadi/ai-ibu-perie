@@ -16,43 +16,7 @@ $username = getCurrentUsername();
 <body class="dashboard-page">
     <div class="dashboard-wrapper">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1 class="logo-title">IBu PeriE</h1>
-                <p class="subtitle">Integrated Bundle Of Perinatal CarE</p>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <a href="dashboard.php" class="nav-item">
-                    <span class="nav-icon">🏠</span>
-                    <span>Dashboard</span>
-                </a>
-                <a href="peristi-bayi.php" class="nav-item active">
-                    <span class="nav-icon">👶</span>
-                    <span>PERISTI BAYI</span>
-                </a>
-                <a href="mne-bayi.php" class="nav-item" data-page="mne-bayi">
-                    <span class="nav-icon">💙</span>
-                    <span>MNE BAYI</span>
-                </a>
-                <a href="quality-improvement.php" class="nav-item" data-page="quality-improvement">
-                    <span class="nav-icon">📊</span>
-                    <span>Quality Improvement</span>
-                </a>
-                <a href="#" class="nav-item" data-page="reports">
-                    <span class="nav-icon">📄</span>
-                    <span>Laporan</span>
-                </a>
-                <a href="#" class="nav-item" data-page="settings">
-                    <span class="nav-icon">⚙️</span>
-                    <span>Pengaturan</span>
-                </a>
-            </nav>
-            
-            <div class="sidebar-footer">
-                <a href="logout.php" class="btn-logout" id="logoutBtn">Keluar</a>
-            </div>
-        </aside>
+        <?php include 'includes/sidebar-nav.php'; ?>
         
         <!-- Main Content -->
         <main class="main-content">
