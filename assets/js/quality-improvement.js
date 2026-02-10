@@ -1,62 +1,79 @@
 // Quality Improvement JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    const subMenuButtons = document.querySelectorAll('.sub-menu-btn');
+    const menuGrid = document.getElementById('qiMenuGrid');
+    const formArea = document.getElementById('qiFormArea');
+    const btnBack = document.getElementById('btnBackToMenu');
+    const formActiveTitle = document.getElementById('formActiveTitle');
+    const menuCards = document.querySelectorAll('#qiMenuGrid .link-card');
     const formSections = document.querySelectorAll('.form-section-content');
 
-    // Handle sub-menu button clicks
-    subMenuButtons.forEach(button => {
-        button.addEventListener('click', function() {
+    // Title mapping for each submenu
+    const titleMap = {
+        'alur-resusitasi-1': 'Alur Resusitasi Neonatus IDAI 2022',
+        'alur-resusitasi-2': 'Alur Resusitasi Neonatus IDAI 2022',
+        'pdsa-2024': 'PDSA 2024',
+        'pdsa-2025': 'PDSA 2025',
+        'pocqi-neonatal': 'POCQI Neonatal',
+        'evaluasi-stable': 'Form Evaluasi STABLE dan Down Score Bayi Asfiksia di NICU'
+    };
+
+    // Handle card clicks - navigate to form/document
+    menuCards.forEach(card => {
+        card.addEventListener('click', function(e) {
+            e.preventDefault();
             const targetSubmenu = this.getAttribute('data-submenu');
             
-            // Remove active class from all buttons
-            subMenuButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to clicked button
-            this.classList.add('active');
-            
+            if (!targetSubmenu) return;
+
             // Hide all form sections
             formSections.forEach(section => {
                 section.style.display = 'none';
             });
-            
+
             // Show target form section
             const targetForm = document.getElementById(`form-${targetSubmenu}`);
             if (targetForm) {
                 targetForm.style.display = 'block';
             }
+
+            // Update active title
+            if (formActiveTitle) {
+                formActiveTitle.textContent = titleMap[targetSubmenu] || '';
+            }
+
+            // Toggle views with animation
+            menuGrid.style.display = 'none';
+            formArea.style.display = 'block';
+            formArea.classList.add('fade-in');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     });
 
-    // Initialize: Show first form (evaluasi-stable)
-    if (formSections.length > 0) {
-        formSections.forEach((section, index) => {
-            if (index === 0) {
-                section.style.display = 'block';
-            } else {
-                section.style.display = 'none';
-            }
+    // Handle back button - return to menu grid
+    if (btnBack) {
+        btnBack.addEventListener('click', function() {
+            formArea.style.display = 'none';
+            formArea.classList.remove('fade-in');
+            menuGrid.style.display = 'block';
+            menuGrid.classList.add('fade-in');
+
+            // Remove animation class after it plays
+            setTimeout(() => {
+                menuGrid.classList.remove('fade-in');
+            }, 500);
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
-});
 
-// Function to handle PDF download (dummy function)
-function downloadPDF(pdfType) {
-    // In a real application, this would trigger an actual download
-    // For now, we'll just show an alert
-    const pdfNames = {
-        'stable-protocol': 'Protokol STABLE Score',
-        'down-protocol': 'Protokol Down Score',
-        'sop-nicu': 'Standar Operasional Prosedur (SOP) NICU',
-        'asfiksia-management': 'Panduan Manajemen Bayi Asfiksia',
-        'qi-guidelines': 'Quality Improvement Guidelines',
-        'nicu-forms': 'Formulir Dokumentasi NICU',
-        'qi-report': 'Laporan Quality Improvement'
-    };
-    
-    const pdfName = pdfNames[pdfType] || 'Dokumen PDF';
-    alert(`Download ${pdfName} akan dimulai...\n\n(Catatan: Ini adalah fungsi dummy. Di implementasi sebenarnya, file PDF akan diunduh dari server.)`);
-    
-    // In a real implementation, you would do something like:
-    // window.location.href = `/api/download-pdf/${pdfType}`;
-    // or use fetch API to download the file
-}
+    // Handle cancel buttons inside forms - go back to menu
+    const cancelButtons = document.querySelectorAll('#qiFormArea .btn-cancel');
+    cancelButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (btnBack) btnBack.click();
+        });
+    });
+});

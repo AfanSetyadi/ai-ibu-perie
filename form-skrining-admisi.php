@@ -1,0 +1,133 @@
+<?php
+require_once 'includes/config.php';
+requireLogin();
+
+$username = getCurrentUsername();
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Skrining Admisi - IBu PeriE</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/peristi-bayi.css">
+    <link rel="stylesheet" href="assets/css/skrining-admisi.css">
+</head>
+<body class="dashboard-page">
+    <div class="dashboard-wrapper">
+        <!-- Sidebar -->
+        <?php include 'includes/sidebar-nav.php'; ?>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h2>Form Skrining Admisi</h2>
+                    <p class="hospital-name">PERISTI BAYI RSUD RTN Sidoarjo</p>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="userDisplayName"><?php echo htmlspecialchars($username); ?></span>
+                        <button class="btn-icon" id="userMenuBtn">👤</button>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Form Skrining Admisi -->
+            <div class="peristi-content">
+                <div class="form-container">
+                    <h3 class="form-section-title">📋 Formulir Skrining Admisi</h3>
+                    <form id="formSkriningAdmisi">
+                        <!-- Bagian 1: Data Pasien -->
+                        <div class="form-section">
+                            <h4 class="form-section-subtitle">Data Pasien</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Nama Ibu</label>
+                                    <input type="text" name="nama_ibu" placeholder="Masukkan nama lengkap ibu" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>No. RM</label>
+                                    <input type="number" name="no_rm" placeholder="Masukkan No. Rekam Medis" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Hari / Tanggal</label>
+                                    <input type="date" name="tanggal" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Diagnosa Ibu</label>
+                                    <input type="text" name="diagnosa_ibu" placeholder="Masukkan diagnosa ibu" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bagian 2: Penilaian Aspek Risiko -->
+                        <div class="form-section">
+                            <h4 class="form-section-subtitle">Penilaian Aspek Risiko</h4>
+                            <div class="form-row form-row-3col">
+                                <div class="form-group">
+                                    <label>Aspek Maternal</label>
+                                    <select name="aspek_maternal" id="aspekMaternal" required>
+                                        <option value="">Pilih tingkat risiko</option>
+                                        <option value="RENDAH">Rendah</option>
+                                        <option value="SEDANG">Sedang</option>
+                                        <option value="TINGGI">Tinggi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Aspek Janin</label>
+                                    <select name="aspek_janin" id="aspekJanin" required>
+                                        <option value="">Pilih tingkat risiko</option>
+                                        <option value="RENDAH">Rendah</option>
+                                        <option value="SEDANG">Sedang</option>
+                                        <option value="TINGGI">Tinggi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Aspek Penyulit</label>
+                                    <select name="aspek_penyulit" id="aspekPenyulit" required>
+                                        <option value="">Pilih tingkat risiko</option>
+                                        <option value="RENDAH">Rendah</option>
+                                        <option value="SEDANG">Sedang</option>
+                                        <option value="TINGGI">Tinggi</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bagian 3: Kesimpulan AI -->
+                        <div class="form-section">
+                            <h4 class="form-section-subtitle">Kesimpulan</h4>
+                            <div class="ai-generate-wrapper">
+                                <button type="button" class="btn-ai-generate" id="btnGenerateKesimpulan">
+                                    <span class="ai-icon">🤖</span> Generate Kesimpulan dengan AI
+                                </button>
+                                <span class="ai-hint">Isi semua field di atas terlebih dahulu, lalu klik tombol untuk generate kesimpulan otomatis.</span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group form-group-full">
+                                    <label>Kesimpulan <span class="ai-badge">AI Generated</span></label>
+                                    <textarea name="kesimpulan" id="kesimpulanAI" rows="5" placeholder="Kesimpulan akan di-generate oleh AI berdasarkan data yang telah diisi..." readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-cancel" id="btnBatal">Batal</button>
+                            <button type="submit" class="btn-save">Simpan Data Skrining</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/skrining-admisi.js"></script>
+</body>
+</html>
+

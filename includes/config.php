@@ -2,11 +2,29 @@
 // Start session
 session_start();
 
+// Load .env file
+$envFile = __DIR__ . '/../.env';
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos($line, '=') !== false) {
+            list($key, $value) = explode('=', $line, 2);
+            $_ENV[trim($key)] = trim($value);
+            putenv(trim($key) . '=' . trim($value));
+        }
+    }
+}
+
 // Database configuration (optional - untuk koneksi database di masa depan)
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'ai_ibu_perie');
+
+// OpenAI Configuration
+define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') ?: '');
+define('OPENAI_MODEL', getenv('OPENAI_MODEL') ?: 'chatgpt-4o-latest');
 
 // Check if user is logged in
 function isLoggedIn() {

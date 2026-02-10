@@ -1,5 +1,416 @@
 /* PERISTI BAYI Specific Styles */
 
+/* ======================== */
+/* Section Intro - Enhanced */
+/* ======================== */
+.section-intro {
+    margin-bottom: 2rem;
+    text-align: center;
+    background: var(--white);
+    border-radius: 16px;
+    padding: 2rem 2rem 1.5rem;
+    box-shadow: 0 2px 12px rgba(107, 70, 193, 0.06);
+    position: relative;
+    overflow: hidden;
+}
+
+.section-intro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #6B46C1, #8B5CF6, #14B8A6, #F59E0B, #E11D48);
+    border-radius: 16px 16px 0 0;
+}
+
+.section-intro-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+    animation: bounceIn 0.6s ease;
+}
+
+.section-intro h3 {
+    font-size: 1.5rem;
+    color: var(--primary-purple);
+    margin-bottom: 0.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.section-intro p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.section-intro-divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-purple), var(--primary-purple-light));
+    border-radius: 3px;
+    margin: 1rem auto 0;
+}
+
+/* ======================== */
+/* Link Cards Grid          */
+/* ======================== */
+.link-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.35rem;
+}
+
+/* ======================== */
+/* Card Base - Redesigned   */
+/* ======================== */
+.link-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--white);
+    border-radius: 20px;
+    padding: 2rem 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 240px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease;
+    animation: fadeSlideUp 0.5s ease both;
+    animation-delay: calc(var(--card-index, 0) * 0.07s);
+}
+
+/* Decorative circles */
+.link-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: transform 0.5s ease;
+}
+
+.link-card::after {
+    content: '';
+    position: absolute;
+    bottom: -35%;
+    left: -20%;
+    width: 160px;
+    height: 160px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 50%;
+    transition: transform 0.5s ease;
+}
+
+.link-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+.link-card:hover::before {
+    transform: scale(1.4) rotate(10deg);
+}
+
+.link-card:hover::after {
+    transform: scale(1.3) rotate(-10deg);
+}
+
+.link-card:active {
+    transform: translateY(-3px) scale(1.01);
+}
+
+/* Card Number */
+.link-card-number {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.05em;
+    z-index: 1;
+    font-family: 'Segoe UI', monospace;
+}
+
+/* Icon Wrapper */
+.link-card-icon-wrap {
+    width: 68px;
+    height: 68px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.35s ease, border-color 0.35s ease;
+}
+
+.link-card:hover .link-card-icon-wrap {
+    transform: scale(1.15) rotate(-3deg);
+    background: rgba(255, 255, 255, 0.32);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.link-card-icon {
+    font-size: 2rem;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Title */
+.link-card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0 0 0.4rem 0;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Description */
+.link-card-desc {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.82);
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+    flex: 1;
+}
+
+/* Badge / CTA */
+.link-card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    padding: 0.45rem 1.15rem;
+    border-radius: 24px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--white);
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: background 0.3s ease, gap 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+}
+
+.link-card:hover .link-card-badge {
+    background: rgba(255, 255, 255, 0.38);
+    border-color: rgba(255, 255, 255, 0.3);
+    padding-right: 1.4rem;
+}
+
+.link-card-badge .arrow {
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.link-card:hover .link-card-badge .arrow {
+    transform: translateX(4px);
+}
+
+/* ======================== */
+/* Gradient Variants        */
+/* ======================== */
+.card-gradient-1 {
+    background: linear-gradient(135deg, #6B46C1 0%, #9F7AEA 100%);
+    box-shadow: 0 6px 20px rgba(107, 70, 193, 0.35);
+}
+
+.card-gradient-2 {
+    background: linear-gradient(135deg, #0D9488 0%, #2DD4BF 100%);
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+}
+
+.card-gradient-3 {
+    background: linear-gradient(135deg, #E11D48 0%, #FB7185 100%);
+    box-shadow: 0 6px 20px rgba(225, 29, 72, 0.3);
+}
+
+.card-gradient-4 {
+    background: linear-gradient(135deg, #D97706 0%, #FBBF24 100%);
+    box-shadow: 0 6px 20px rgba(217, 119, 6, 0.3);
+}
+
+.card-gradient-5 {
+    background: linear-gradient(135deg, #2563EB 0%, #60A5FA 100%);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+.card-gradient-6 {
+    background: linear-gradient(135deg, #7C3AED 0%, #C4B5FD 100%);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3);
+}
+
+.card-gradient-7 {
+    background: linear-gradient(135deg, #059669 0%, #6EE7B7 100%);
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+}
+
+.card-gradient-8 {
+    background: linear-gradient(135deg, #DC2626 0%, #FCA5A5 100%);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+}
+
+/* ======================== */
+/* Animations               */
+/* ======================== */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    70% {
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease both;
+}
+
+/* ======================== */
+/* MNE Grid - 3 columns     */
+/* ======================== */
+.mne-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* ======================== */
+/* Form Back Header         */
+/* ======================== */
+.form-back-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    background: var(--white);
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 12px rgba(107, 70, 193, 0.3);
+}
+
+.btn-back:hover {
+    transform: translateX(-3px);
+    box-shadow: 0 5px 18px rgba(107, 70, 193, 0.4);
+}
+
+.btn-back-arrow {
+    font-size: 1.15rem;
+    transition: transform 0.3s ease;
+}
+
+.btn-back:hover .btn-back-arrow {
+    transform: translateX(-3px);
+}
+
+.form-back-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-purple);
+    letter-spacing: -0.01em;
+}
+
+/* ======================== */
+/* QI Document Section      */
+/* ======================== */
+.qi-document-section {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.qi-doc-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    color: var(--white);
+}
+
+.qi-doc-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.qi-doc-header h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.qi-doc-header p {
+    font-size: 0.88rem;
+    opacity: 0.85;
+}
+
+.qi-doc-body {
+    padding: 2rem;
+}
+
+/* Sub-menu nav (used by mne-bayi.php) */
 .sub-menu-nav {
     display: flex;
     gap: 0.75rem;
@@ -66,6 +477,10 @@
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
+}
+
+.form-row.form-row-3col {
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .form-group-full {
@@ -399,8 +814,113 @@
     color: #92400E;
 }
 
-/* Responsive */
+/* ======================== */
+/* Responsive               */
+/* ======================== */
+@media (max-width: 1400px) {
+    .link-cards-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.15rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .link-cards-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.1rem;
+    }
+
+    .mne-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .link-card {
+        min-height: 230px;
+    }
+}
+
+@media (max-width: 992px) {
+    .link-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .mne-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section-intro {
+        padding: 1.5rem;
+    }
+
+    .section-intro h3 {
+        font-size: 1.3rem;
+    }
+
+    .form-back-header {
+        flex-wrap: wrap;
+    }
+}
+
 @media (max-width: 768px) {
+    .link-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.85rem;
+    }
+
+    .mne-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .link-card {
+        min-height: 200px;
+        padding: 1.5rem 1rem 1.25rem;
+        border-radius: 16px;
+    }
+
+    .link-card-icon-wrap {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+    }
+
+    .link-card-icon {
+        font-size: 1.6rem;
+    }
+
+    .link-card-title {
+        font-size: 0.9rem;
+    }
+
+    .link-card-desc {
+        font-size: 0.72rem;
+    }
+
+    .section-intro-icon {
+        font-size: 2rem;
+    }
+
+    .section-intro h3 {
+        font-size: 1.2rem;
+    }
+
+    .section-intro p {
+        font-size: 0.85rem;
+    }
+
+    .form-back-header {
+        padding: 0.85rem 1rem;
+    }
+
+    .btn-back {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .form-back-title {
+        font-size: 0.95rem;
+    }
+
     .sub-menu-nav {
         flex-direction: column;
     }
@@ -410,6 +930,10 @@
     }
     
     .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row.form-row-3col {
         grid-template-columns: 1fr;
     }
     
@@ -428,3 +952,43 @@
     }
 }
 
+@media (max-width: 480px) {
+    .link-cards-grid {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+
+    .mne-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .link-card {
+        flex-direction: row;
+        text-align: left;
+        min-height: auto;
+        padding: 1.25rem;
+        gap: 1rem;
+    }
+
+    .link-card-icon-wrap {
+        margin-bottom: 0;
+        flex-shrink: 0;
+        width: 52px;
+        height: 52px;
+    }
+
+    .link-card-desc {
+        margin-bottom: 0.5rem;
+    }
+
+    .link-card-number {
+        top: 8px;
+        left: auto;
+        right: 12px;
+    }
+
+    .form-back-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

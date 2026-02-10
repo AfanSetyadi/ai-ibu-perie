@@ -1,5 +1,6 @@
 // Peristi Bayi JavaScript
 document.addEventListener('DOMContentLoaded', function() {
+    // Sub-menu button handling (used by mne-bayi.php and other pages sharing this CSS)
     const subMenuButtons = document.querySelectorAll('.sub-menu-btn');
     const formSections = document.querySelectorAll('.form-section-content');
 
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Initialize: Show first form (registrasi)
+    // Initialize: Show first form if sub-menu exists
     if (formSections.length > 0) {
         formSections.forEach((section, index) => {
             if (index === 0) {

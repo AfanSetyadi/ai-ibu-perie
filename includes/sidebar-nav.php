@@ -7,7 +7,9 @@ $pageMap = [
     'dashboard.php' => 'dashboard',
     'peristi-bayi.php' => 'peristi-bayi',
     'mne-bayi.php' => 'mne-bayi',
-    'quality-improvement.php' => 'quality-improvement'
+    'quality-improvement.php' => 'quality-improvement',
+    'form-skrining-admisi.php' => 'form-skrining-admisi',
+    'data-skrining-admisi.php' => 'data-skrining-admisi'
 ];
 
 // Tentukan halaman aktif
@@ -40,16 +42,16 @@ $navItems = [
         'page' => 'quality-improvement'
     ],
     [
-        'href' => '#',
-        'icon' => '📄',
-        'label' => 'Laporan',
-        'page' => 'reports'
+        'href' => 'form-skrining-admisi.php',
+        'icon' => '📋',
+        'label' => 'Form Skrining Admisi',
+        'page' => 'form-skrining-admisi'
     ],
     [
-        'href' => '#',
-        'icon' => '⚙️',
-        'label' => 'Pengaturan',
-        'page' => 'settings'
+        'href' => 'data-skrining-admisi.php',
+        'icon' => '🗂️',
+        'label' => 'Data Skrining Admisi',
+        'page' => 'data-skrining-admisi'
     ]
 ];
 ?>
