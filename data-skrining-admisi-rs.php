@@ -9,7 +9,7 @@ $username = getCurrentUsername();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Skrining Admisi - IBu PeriE</title>
+    <title>Data Skrining Admisi (Rumah Sakit) - IBu PeriE</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/peristi-bayi.css">
     <link rel="stylesheet" href="assets/css/skrining-admisi.css">
@@ -25,7 +25,7 @@ $username = getCurrentUsername();
             <header class="top-header">
                 <div class="header-left">
                     <h2>Data Skrining Admisi</h2>
-                    <p class="hospital-name">PERISTI BAYI RSUD RTN Sidoarjo</p>
+                    <p class="hospital-name">Rumah Sakit — PERISTI BAYI RSUD RTN Sidoarjo</p>
                 </div>
                 <div class="header-right">
                     <div class="user-info">
@@ -39,8 +39,8 @@ $username = getCurrentUsername();
             <div class="peristi-content">
                 <!-- Page Header -->
                 <div class="page-header">
-                    <h3>🗂️ Data Skrining Admisi</h3>
-                    <a href="form-skrining-admisi.php" class="btn-add" style="text-decoration: none;">
+                    <h3>🗂️ Data Skrining Admisi — Rumah Sakit</h3>
+                    <a href="form-skrining-admisi-rs.php" class="btn-add" style="text-decoration: none;">
                         <span>+</span> Tambah Data Baru
                     </a>
                 </div>
@@ -214,6 +214,15 @@ $username = getCurrentUsername();
     </div>
     
     <script src="assets/js/dashboard.js"></script>
+    <script>
+        window.SKRINING_CONFIG = {
+            dataPageUrl: 'data-skrining-admisi-rs.php',
+            formPageUrl: 'form-skrining-admisi-rs.php',
+            storageKey: 'skriningAdmisiDataRS',
+            tipeFaskes: 'rs'
+        };
+    </script>
     <script src="assets/js/skrining-admisi.js"></script>
 </body>
 </html>
+

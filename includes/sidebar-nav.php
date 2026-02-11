@@ -8,50 +8,83 @@ $pageMap = [
     'peristi-bayi.php' => 'peristi-bayi',
     'mne-bayi.php' => 'mne-bayi',
     'quality-improvement.php' => 'quality-improvement',
-    'form-skrining-admisi.php' => 'form-skrining-admisi',
-    'data-skrining-admisi.php' => 'data-skrining-admisi'
+    'form-skrining-admisi-rs.php' => 'form-skrining-admisi-rs',
+    'data-skrining-admisi-rs.php' => 'data-skrining-admisi-rs',
+    'form-skrining-admisi-puskesmas.php' => 'form-skrining-admisi-puskesmas',
+    'data-skrining-admisi-puskesmas.php' => 'data-skrining-admisi-puskesmas'
 ];
 
 // Tentukan halaman aktif
 $activePage = isset($pageMap[$currentPage]) ? $pageMap[$currentPage] : '';
 
-// Daftar menu navigasi
-$navItems = [
+// Daftar menu navigasi dengan grup
+$navGroups = [
     [
+        'type' => 'item',
         'href' => 'dashboard.php',
         'icon' => '🏠',
         'label' => 'Dashboard',
         'page' => 'dashboard'
     ],
     [
-        'href' => 'peristi-bayi.php',
-        'icon' => '👶',
-        'label' => 'PERISTI BAYI',
-        'page' => 'peristi-bayi'
+        'type' => 'group',
+        'label' => 'Rumah Sakit',
+        'icon' => '🏥',
+        'items' => [
+            [
+                'href' => 'form-skrining-admisi-rs.php',
+                'icon' => '📋',
+                'label' => 'Form Skrining Admisi',
+                'page' => 'form-skrining-admisi-rs'
+            ],
+            [
+                'href' => 'data-skrining-admisi-rs.php',
+                'icon' => '🗂️',
+                'label' => 'Data Skrining Admisi',
+                'page' => 'data-skrining-admisi-rs'
+            ],
+            [
+                'type' => 'item',
+                'href' => 'peristi-bayi.php',
+                'icon' => '👶',
+                'label' => 'PERISTI BAYI',
+                'page' => 'peristi-bayi'
+            ],
+            [
+                'type' => 'item',
+                'href' => 'mne-bayi.php',
+                'icon' => '💙',
+                'label' => 'MNE BAYI',
+                'page' => 'mne-bayi'
+            ],
+            [
+                'type' => 'item',
+                'href' => 'quality-improvement.php',
+                'icon' => '📊',
+                'label' => 'Quality Improvement',
+                'page' => 'quality-improvement'
+            ]
+            
+        ]
     ],
     [
-        'href' => 'mne-bayi.php',
-        'icon' => '💙',
-        'label' => 'MNE BAYI',
-        'page' => 'mne-bayi'
-    ],
-    [
-        'href' => 'quality-improvement.php',
-        'icon' => '📊',
-        'label' => 'Quality Improvement',
-        'page' => 'quality-improvement'
-    ],
-    [
-        'href' => 'form-skrining-admisi.php',
-        'icon' => '📋',
-        'label' => 'Form Skrining Admisi',
-        'page' => 'form-skrining-admisi'
-    ],
-    [
-        'href' => 'data-skrining-admisi.php',
-        'icon' => '🗂️',
-        'label' => 'Data Skrining Admisi',
-        'page' => 'data-skrining-admisi'
+        'type' => 'group',
+        'label' => 'Puskesmas',
+        'icon' => '🏪',
+        'items' => [
+            [
+                'href' => 'form-skrining-admisi-puskesmas.php',
+                'icon' => '📋',
+                'label' => 'Form Skrining Admisi',
+                'page' => 'form-skrining-admisi-puskesmas'
+            ],
+            [
+                'href' => 'data-skrining-admisi-puskesmas.php',
+                'icon' => '🗂️',
+                'label' => 'Data Skrining Admisi',
+                'page' => 'data-skrining-admisi-puskesmas'
+            ]
+        ]
     ]
 ];
 ?>
@@ -62,13 +95,43 @@ $navItems = [
     </div>
     
     <nav class="sidebar-nav">
-        <?php foreach ($navItems as $item): ?>
-            <a href="<?php echo htmlspecialchars($item['href']); ?>" 
-               class="nav-item <?php echo ($activePage === $item['page']) ? 'active' : ''; ?>" 
-               data-page="<?php echo htmlspecialchars($item['page']); ?>">
-                <span class="nav-icon"><?php echo htmlspecialchars($item['icon']); ?></span>
-                <span><?php echo htmlspecialchars($item['label']); ?></span>
-            </a>
+        <?php foreach ($navGroups as $entry): ?>
+            <?php if ($entry['type'] === 'item'): ?>
+                <a href="<?php echo htmlspecialchars($entry['href']); ?>" 
+                   class="nav-item <?php echo ($activePage === $entry['page']) ? 'active' : ''; ?>" 
+                   data-page="<?php echo htmlspecialchars($entry['page']); ?>">
+                    <span class="nav-icon"><?php echo htmlspecialchars($entry['icon']); ?></span>
+                    <span><?php echo htmlspecialchars($entry['label']); ?></span>
+                </a>
+            <?php elseif ($entry['type'] === 'group'): ?>
+                <?php
+                    // Check if any item in this group is active
+                    $groupActive = false;
+                    foreach ($entry['items'] as $subItem) {
+                        if ($activePage === $subItem['page']) {
+                            $groupActive = true;
+                            break;
+                        }
+                    }
+                ?>
+                <div class="nav-group <?php echo $groupActive ? 'nav-group-active' : ''; ?>">
+                    <div class="nav-group-header">
+                        <span class="nav-icon"><?php echo htmlspecialchars($entry['icon']); ?></span>
+                        <span><?php echo htmlspecialchars($entry['label']); ?></span>
+                        <span class="nav-group-arrow">▾</span>
+                    </div>
+                    <div class="nav-group-items">
+                        <?php foreach ($entry['items'] as $subItem): ?>
+                            <a href="<?php echo htmlspecialchars($subItem['href']); ?>" 
+                               class="nav-item nav-sub-item <?php echo ($activePage === $subItem['page']) ? 'active' : ''; ?>" 
+                               data-page="<?php echo htmlspecialchars($subItem['page']); ?>">
+                                <span class="nav-icon"><?php echo htmlspecialchars($subItem['icon']); ?></span>
+                                <span><?php echo htmlspecialchars($subItem['label']); ?></span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     </nav>
     
@@ -76,5 +139,3 @@ $navItems = [
         <a href="logout.php" class="btn-logout" id="logoutBtn">Keluar</a>
     </div>
 </aside>
-
-

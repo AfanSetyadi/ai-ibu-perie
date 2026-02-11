@@ -220,6 +220,35 @@ textarea[readonly] {
     margin-left: 0.5rem;
 }
 
+/* Aspek Risiko Vertical List */
+.aspek-risiko-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.aspek-risiko-list .form-group {
+    background: #FAFAFA;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+/* Aspek Reference Images */
+.aspek-image-wrapper {
+    margin-bottom: 0.75rem;
+    text-align: center;
+}
+
+.aspek-ref-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid #E5E7EB;
+    background: #FFFFFF;
+    padding: 4px;
+}
+
 /* Detail item full width */
 .detail-item-full {
     grid-column: 1 / -1;
@@ -234,6 +263,7 @@ textarea[readonly] {
     .detail-grid {
         grid-template-columns: 1fr;
     }
+
 }
 
 @media (max-width: 480px) {

@@ -9,7 +9,7 @@ $username = getCurrentUsername();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form Skrining Admisi - IBu PeriE</title>
+    <title>Form Skrining Admisi (Puskesmas) - IBu PeriE</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/peristi-bayi.css">
     <link rel="stylesheet" href="assets/css/skrining-admisi.css">
@@ -25,7 +25,7 @@ $username = getCurrentUsername();
             <header class="top-header">
                 <div class="header-left">
                     <h2>Form Skrining Admisi</h2>
-                    <p class="hospital-name">PERISTI BAYI RSUD RTN Sidoarjo</p>
+                    <p class="hospital-name">Puskesmas</p>
                 </div>
                 <div class="header-right">
                     <div class="user-info">
@@ -38,7 +38,7 @@ $username = getCurrentUsername();
             <!-- Form Skrining Admisi -->
             <div class="peristi-content">
                 <div class="form-container">
-                    <h3 class="form-section-title">📋 Formulir Skrining Admisi</h3>
+                    <h3 class="form-section-title">📋 Formulir Skrining Admisi — Puskesmas</h3>
                     <form id="formSkriningAdmisi">
                         <!-- Bagian 1: Data Pasien -->
                         <div class="form-section">
@@ -68,8 +68,11 @@ $username = getCurrentUsername();
                         <!-- Bagian 2: Penilaian Aspek Risiko -->
                         <div class="form-section">
                             <h4 class="form-section-subtitle">Penilaian Aspek Risiko</h4>
-                            <div class="form-row form-row-3col">
+                            <div class="aspek-risiko-list">
                                 <div class="form-group">
+                                    <div class="aspek-image-wrapper">
+                                        <img src="assets/images/Aspek-Maternal.jpg" alt="Tabel Referensi Aspek Maternal" class="aspek-ref-image">
+                                    </div>
                                     <label>Aspek Maternal</label>
                                     <select name="aspek_maternal" id="aspekMaternal" required>
                                         <option value="">Pilih tingkat risiko</option>
@@ -79,6 +82,9 @@ $username = getCurrentUsername();
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <div class="aspek-image-wrapper">
+                                        <img src="assets/images/Aspek-Janin.jpg" alt="Tabel Referensi Aspek Janin" class="aspek-ref-image">
+                                    </div>
                                     <label>Aspek Janin</label>
                                     <select name="aspek_janin" id="aspekJanin" required>
                                         <option value="">Pilih tingkat risiko</option>
@@ -88,6 +94,9 @@ $username = getCurrentUsername();
                                     </select>
                                 </div>
                                 <div class="form-group">
+                                    <div class="aspek-image-wrapper">
+                                        <img src="assets/images/Aspek-Penyulit.jpg" alt="Tabel Referensi Aspek Penyulit" class="aspek-ref-image">
+                                    </div>
                                     <label>Aspek Penyulit</label>
                                     <select name="aspek_penyulit" id="aspekPenyulit" required>
                                         <option value="">Pilih tingkat risiko</option>
@@ -127,6 +136,14 @@ $username = getCurrentUsername();
     </div>
     
     <script src="assets/js/dashboard.js"></script>
+    <script>
+        window.SKRINING_CONFIG = {
+            dataPageUrl: 'data-skrining-admisi-puskesmas.php',
+            formPageUrl: 'form-skrining-admisi-puskesmas.php',
+            storageKey: 'skriningAdmisiDataPuskesmas',
+            tipeFaskes: 'puskesmas'
+        };
+    </script>
     <script src="assets/js/skrining-admisi.js"></script>
 </body>
 </html>

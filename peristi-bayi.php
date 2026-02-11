@@ -44,7 +44,7 @@ $username = getCurrentUsername();
             
             <!-- Link Cards Grid -->
             <div class="link-cards-grid">
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.b5vxv4kjhqgp" target="_blank" class="link-card card-gradient-1" style="--card-index: 0">
+                <a href="https://docs.google.com/spreadsheets/d/1VPMXeuaKIJcVPhjkDt2D_5cd-TxYYzFurdFaTbsoGDo/edit?usp=drive_link" target="_blank" class="link-card card-gradient-1" style="--card-index: 0">
                     <span class="link-card-number">01</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">📋</span>
@@ -54,7 +54,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.caqq89im36oe" target="_blank" class="link-card card-gradient-2" style="--card-index: 1">
+                <a href="https://docs.google.com/spreadsheets/d/1LHI1sOqp6tzQFAi-MOg8-kx5U8Dif1sPrc9VDgmVYgM/edit?gid=0#gid=0" target="_blank" class="link-card card-gradient-2" style="--card-index: 1">
                     <span class="link-card-number">02</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">🔄</span>
@@ -64,7 +64,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.pcci0icpzdd7" target="_blank" class="link-card card-gradient-3" style="--card-index: 2">
+                <a href="https://docs.google.com/spreadsheets/d/1u_veNePJUTYIsiQL0WxREMtut430cmZWhdXodyMLCfA/edit?usp=drive_link" target="_blank" class="link-card card-gradient-3" style="--card-index: 2">
                     <span class="link-card-number">03</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">❤️</span>
@@ -74,7 +74,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.9qoxrfu4wkbb" target="_blank" class="link-card card-gradient-4" style="--card-index: 3">
+                <a href="https://docs.google.com/spreadsheets/d/19BXJgHcEt-CY4ZhrJ3PsFIx-COEpz99onjoYV599PJY/edit?usp=drive_link" target="_blank" class="link-card card-gradient-4" style="--card-index: 3">
                     <span class="link-card-number">04</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">📊</span>
@@ -84,7 +84,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.96e0m5ggckcd" target="_blank" class="link-card card-gradient-5" style="--card-index: 4">
+                <a href="https://docs.google.com/spreadsheets/d/1qktEHrnhLT7LbQ5Qsab91MBV8QwoAtSS/edit?usp=drive_link&ouid=108871711307652584373&rtpof=true&sd=true" target="_blank" class="link-card card-gradient-5" style="--card-index: 4">
                     <span class="link-card-number">05</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">💉</span>
@@ -94,7 +94,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.dbpst0sf85or" target="_blank" class="link-card card-gradient-6" style="--card-index: 5">
+                <a href="https://docs.google.com/spreadsheets/d/1jPNNDcq2OXKnxhZfAbOtQwvFFw-KtFxLEbGuTUWfVRE/edit?usp=drive_link" target="_blank" class="link-card card-gradient-6" style="--card-index: 5">
                     <span class="link-card-number">06</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">🩺</span>
@@ -104,7 +104,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.d3srzmenf9x1" target="_blank" class="link-card card-gradient-7" style="--card-index: 6">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSf2QSZf7y2218LcfZaAmJjGOAVFVf6Y4lpjf__b5B1JxRiVVg/viewform" target="_blank" class="link-card card-gradient-7" style="--card-index: 6">
                     <span class="link-card-number">07</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">📝</span>
@@ -114,7 +114,7 @@ $username = getCurrentUsername();
                     <span class="link-card-badge">Buka Form <span class="arrow">→</span></span>
                 </a>
 
-                <a href="https://sites.google.com/view/peristibayirsudrtnsidoarjo/home/ibu-perie/peristi-bayi#h.nx4x5n4djaom" target="_blank" class="link-card card-gradient-8" style="--card-index: 7">
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSc8Xfm9dGsorgsEcaWoEZigw3BrgRrzfd7Qy5tBYul0r0gGUA/viewform" target="_blank" class="link-card card-gradient-8" style="--card-index: 7">
                     <span class="link-card-number">08</span>
                     <div class="link-card-icon-wrap">
                         <span class="link-card-icon">✅</span>

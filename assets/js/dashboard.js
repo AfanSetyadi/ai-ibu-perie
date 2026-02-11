@@ -45,6 +45,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Nav group toggle (collapsible sidebar sections)
+    const navGroupHeaders = document.querySelectorAll('.nav-group-header');
+    navGroupHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const group = this.closest('.nav-group');
+            group.classList.toggle('collapsed');
+        });
+    });
+
     // Initialize dashboard data
     loadDashboardData();
     

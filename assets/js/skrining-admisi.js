@@ -1,6 +1,14 @@
 // Skrining Admisi JavaScript
 document.addEventListener('DOMContentLoaded', function() {
 
+    // ===== Configuration =====
+    const config = window.SKRINING_CONFIG || {
+        dataPageUrl: 'data-skrining-admisi-rs.php',
+        formPageUrl: 'form-skrining-admisi-rs.php',
+        storageKey: 'skriningAdmisiDataRS',
+        tipeFaskes: 'rs'
+    };
+
     // ===== AI Kesimpulan Generate (Form Page) =====
     const btnGenerate = document.getElementById('btnGenerateKesimpulan');
     const kesimpulanField = document.getElementById('kesimpulanAI');
@@ -48,7 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     diagnosa_ibu: diagnosaIbu,
                     aspek_maternal: maternal,
                     aspek_janin: janin,
-                    aspek_penyulit: penyulit
+                    aspek_penyulit: penyulit,
+                    tipe_faskes: config.tipeFaskes
                 })
             });
 
@@ -98,12 +107,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 data[key] = value;
             });
 
-            // Save to localStorage
-            let skriningData = JSON.parse(localStorage.getItem('skriningAdmisiData') || '[]');
+            // Save to localStorage using config key
+            let skriningData = JSON.parse(localStorage.getItem(config.storageKey) || '[]');
             data.id = Date.now();
             data.created_at = new Date().toLocaleString('id-ID');
             skriningData.push(data);
-            localStorage.setItem('skriningAdmisiData', JSON.stringify(skriningData));
+            localStorage.setItem(config.storageKey, JSON.stringify(skriningData));
 
             // Show success message
             showNotification('Data skrining admisi berhasil disimpan!', 'success');
@@ -114,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     formSkrining.reset();
                     if (kesimpulanField) kesimpulanField.value = '';
                 } else {
-                    window.location.href = 'data-skrining-admisi.php';
+                    window.location.href = config.dataPageUrl;
                 }
             }, 500);
         });
@@ -125,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (btnBatal) {
         btnBatal.addEventListener('click', function() {
             if (confirm('Apakah Anda yakin ingin membatalkan? Data yang belum disimpan akan hilang.')) {
-                window.location.href = 'data-skrining-admisi.php';
+                window.location.href = config.dataPageUrl;
             }
         });
     }

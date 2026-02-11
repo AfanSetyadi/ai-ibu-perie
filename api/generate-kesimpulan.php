@@ -28,6 +28,7 @@ $diagnosaIbu = $input['diagnosa_ibu'] ?? '';
 $aspekMaternal = $input['aspek_maternal'] ?? '';
 $aspekJanin = $input['aspek_janin'] ?? '';
 $aspekPenyulit = $input['aspek_penyulit'] ?? '';
+$tipeFaskes = $input['tipe_faskes'] ?? 'rs';
 
 // Validate
 if (empty($namaIbu) || empty($noRM) || empty($tanggal) || empty($diagnosaIbu) || empty($aspekMaternal) || empty($aspekJanin) || empty($aspekPenyulit)) {
@@ -36,13 +37,24 @@ if (empty($namaIbu) || empty($noRM) || empty($tanggal) || empty($diagnosaIbu) ||
     exit();
 }
 
+// Determine facility context based on tipe_faskes
+if ($tipeFaskes === 'puskesmas') {
+    $namaFaskes = 'Puskesmas';
+    $konteksFaskes = 'di Puskesmas';
+    $roleDesc = 'seorang asisten medis ahli di bidang obstetri dan perinatologi di Puskesmas';
+} else {
+    $namaFaskes = 'RSUD RTN Sidoarjo';
+    $konteksFaskes = 'di RSUD RTN Sidoarjo';
+    $roleDesc = 'seorang asisten medis ahli di bidang obstetri dan perinatologi di RSUD RTN Sidoarjo';
+}
+
 // OpenAI API Configuration (loaded from .env via config.php)
 $apiKey = OPENAI_API_KEY;
 $model = OPENAI_MODEL;
 
-$prompt = "Kamu adalah seorang asisten medis ahli di bidang obstetri dan perinatologi di RSUD RTN Sidoarjo. Berdasarkan data skrining admisi berikut, buatkan kesimpulan klinis yang komprehensif dan profesional dalam Bahasa Indonesia.
+$prompt = "Kamu adalah {$roleDesc}. Berdasarkan data skrining admisi berikut, buatkan kesimpulan klinis yang komprehensif dan profesional dalam Bahasa Indonesia.
 
-DATA SKRINING ADMISI:
+DATA SKRINING ADMISI ({$namaFaskes}):
 - Nama Ibu: {$namaIbu}
 - No. Rekam Medis: {$noRM}
 - Hari/Tanggal: {$tanggal}
@@ -122,4 +134,3 @@ echo json_encode([
     'kesimpulan' => trim($kesimpulan)
 ]);
 ?>
-
