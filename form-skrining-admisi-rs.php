@@ -117,10 +117,17 @@ $username = getCurrentUsername();
                                 </button>
                                 <span class="ai-hint">Isi semua field di atas terlebih dahulu, lalu klik tombol untuk generate kesimpulan otomatis.</span>
                             </div>
+                            <!-- Klasifikasi Risiko Badge -->
+                            <div id="klasifikasiRisiko" class="klasifikasi-risiko-wrapper" style="display: none;">
+                                <div class="klasifikasi-risiko-badge" id="klasifikasiBadge">
+                                    <span class="klasifikasi-icon" id="klasifikasiIcon"></span>
+                                    <span class="klasifikasi-text">Klasifikasi Risiko: <strong id="klasifikasiLabel"></strong></span>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group form-group-full">
                                     <label>Kesimpulan <span class="ai-badge">AI Generated</span></label>
-                                    <textarea name="kesimpulan" id="kesimpulanAI" rows="5" placeholder="Kesimpulan akan di-generate oleh AI berdasarkan data yang telah diisi..." readonly></textarea>
+                                    <textarea name="kesimpulan" id="kesimpulanAI" rows="3" placeholder="Kesimpulan akan di-generate oleh AI berdasarkan data yang telah diisi..." readonly></textarea>
                                 </div>
                             </div>
                         </div>

@@ -254,6 +254,67 @@ textarea[readonly] {
     grid-column: 1 / -1;
 }
 
+/* ===== Klasifikasi Risiko Badge ===== */
+.klasifikasi-risiko-wrapper {
+    margin-bottom: 1rem;
+}
+
+.klasifikasi-risiko-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.25rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.4s ease;
+    animation: fadeInBadge 0.5s ease;
+}
+
+@keyframes fadeInBadge {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.klasifikasi-risiko-badge .klasifikasi-icon {
+    font-size: 1.3rem;
+}
+
+.klasifikasi-risiko-badge strong {
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* Klasifikasi - Rendah (Hijau) */
+.klasifikasi-rendah {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    border: 2px solid #34D399;
+    color: #065F46;
+}
+
+/* Klasifikasi - Sedang (Kuning) */
+.klasifikasi-sedang {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    border: 2px solid #FBBF24;
+    color: #92400E;
+}
+
+/* Klasifikasi - Tinggi (Merah) */
+.klasifikasi-tinggi {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    border: 2px solid #F87171;
+    color: #991B1B;
+}
+
+/* ===== Dynamic Height Textarea (Kesimpulan AI) ===== */
+#kesimpulanAI {
+    min-height: 80px;
+    max-height: 600px;
+    overflow-y: auto;
+    resize: none;
+    transition: height 0.2s ease;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .summary-cards {

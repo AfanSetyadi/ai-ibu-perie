@@ -16,10 +16,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const aspekJanin = document.getElementById('aspekJanin');
     const aspekPenyulit = document.getElementById('aspekPenyulit');
 
+    // Classification badge elements
+    const klasifikasiWrapper = document.getElementById('klasifikasiRisiko');
+    const klasifikasiBadge = document.getElementById('klasifikasiBadge');
+    const klasifikasiIcon = document.getElementById('klasifikasiIcon');
+    const klasifikasiLabel = document.getElementById('klasifikasiLabel');
+
     if (btnGenerate && kesimpulanField) {
         btnGenerate.addEventListener('click', function() {
             generateKesimpulanAI();
         });
+    }
+
+    // Auto-resize textarea helper
+    function autoResizeTextarea(textarea) {
+        if (!textarea) return;
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
     }
 
     async function generateKesimpulanAI() {
@@ -69,6 +82,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const kesimpulan = data.kesimpulan;
 
+            // Determine overall risk classification (highest of 3 aspects)
+            const riskLevels = { 'RENDAH': 1, 'SEDANG': 2, 'TINGGI': 3 };
+            const overallScore = Math.max(
+                riskLevels[maternal] || 1,
+                riskLevels[janin] || 1,
+                riskLevels[penyulit] || 1
+            );
+            const riskMap = { 1: 'RENDAH', 2: 'SEDANG', 3: 'TINGGI' };
+            const overallRisk = riskMap[overallScore];
+
+            // Show classification badge
+            showKlasifikasiBadge(overallRisk);
+
             // Typing animation
             kesimpulanField.value = '';
             let i = 0;
@@ -77,11 +103,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (i < kesimpulan.length) {
                     kesimpulanField.value += kesimpulan.charAt(i);
                     i++;
+                    autoResizeTextarea(kesimpulanField);
                     setTimeout(typeChar, typingSpeed);
                 } else {
                     btnGenerate.disabled = false;
                     btnGenerate.innerHTML = '<span class="ai-icon">🤖</span> Generate Ulang Kesimpulan';
                     showNotification('Kesimpulan berhasil di-generate oleh AI!', 'success');
+                    autoResizeTextarea(kesimpulanField);
                 }
             }
             typeChar();
@@ -93,6 +121,30 @@ document.addEventListener('DOMContentLoaded', function() {
             btnGenerate.innerHTML = '<span class="ai-icon">🤖</span> Generate Kesimpulan dengan AI';
             showNotification('Gagal: ' + error.message, 'error');
         }
+    }
+
+    // ===== Klasifikasi Badge Display =====
+    function showKlasifikasiBadge(level) {
+        if (!klasifikasiWrapper || !klasifikasiBadge || !klasifikasiIcon || !klasifikasiLabel) return;
+
+        // Remove previous class
+        klasifikasiBadge.classList.remove('klasifikasi-rendah', 'klasifikasi-sedang', 'klasifikasi-tinggi');
+
+        if (level === 'RENDAH') {
+            klasifikasiBadge.classList.add('klasifikasi-rendah');
+            klasifikasiIcon.textContent = '🟢';
+            klasifikasiLabel.textContent = 'Rendah';
+        } else if (level === 'SEDANG') {
+            klasifikasiBadge.classList.add('klasifikasi-sedang');
+            klasifikasiIcon.textContent = '🟡';
+            klasifikasiLabel.textContent = 'Sedang';
+        } else if (level === 'TINGGI') {
+            klasifikasiBadge.classList.add('klasifikasi-tinggi');
+            klasifikasiIcon.textContent = '🔴';
+            klasifikasiLabel.textContent = 'Tinggi';
+        }
+
+        klasifikasiWrapper.style.display = 'block';
     }
 
     // ===== Form Submission (Form Page) =====
@@ -119,9 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Reset form
             setTimeout(() => {
-                if (confirm('Data berhasil disimpan. Apakah Anda ingin mengisi form baru?')) {
+                    if (confirm('Data berhasil disimpan. Apakah Anda ingin mengisi form baru?')) {
                     formSkrining.reset();
-                    if (kesimpulanField) kesimpulanField.value = '';
+                    if (kesimpulanField) {
+                        kesimpulanField.value = '';
+                        kesimpulanField.style.height = 'auto';
+                    }
+                    if (klasifikasiWrapper) klasifikasiWrapper.style.display = 'none';
                 } else {
                     window.location.href = config.dataPageUrl;
                 }

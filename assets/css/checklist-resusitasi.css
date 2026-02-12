@@ -1,0 +1,439 @@
+/* ===== Checklist Resusitasi Styles ===== */
+
+/* Table Wrapper */
+.checklist-table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(107, 70, 193, 0.08);
+    border: 1px solid #E5E7EB;
+}
+
+/* Checklist Table */
+.checklist-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    min-width: 650px;
+}
+
+.checklist-table thead tr:first-child {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+    color: var(--white);
+}
+
+.checklist-table thead tr.sub-header {
+    background: linear-gradient(135deg, #553C9A 0%, #6B46C1 100%);
+    color: var(--white);
+}
+
+.checklist-table th {
+    padding: 0.85rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.checklist-table th.col-aspek {
+    text-align: left;
+    white-space: normal;
+    min-width: 300px;
+}
+
+.checklist-table th.col-no {
+    width: 50px;
+}
+
+.checklist-table th.col-bobot {
+    width: 65px;
+}
+
+.checklist-table th.col-skor {
+    width: 180px;
+}
+
+.checklist-table th.col-skor-val {
+    width: 60px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.5rem;
+}
+
+/* Section Header Rows */
+.section-header {
+    background: linear-gradient(135deg, rgba(107, 70, 193, 0.1) 0%, rgba(139, 92, 246, 0.06) 100%);
+}
+
+.section-header td {
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--primary-purple);
+}
+
+.section-header .section-letter {
+    text-align: center;
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.section-header .section-title {
+    text-align: left;
+}
+
+/* Checklist Item Rows */
+.checklist-row {
+    transition: background 0.2s ease;
+}
+
+.checklist-row:hover {
+    background: rgba(253, 242, 248, 0.6);
+}
+
+.checklist-row td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #F3F4F6;
+    vertical-align: middle;
+}
+
+.checklist-row .item-no {
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.checklist-row .item-text {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.checklist-row .item-text em {
+    color: var(--primary-purple);
+    font-style: italic;
+}
+
+.checklist-row .item-bobot {
+    text-align: center;
+    font-weight: 700;
+    color: var(--primary-purple);
+    font-size: 0.95rem;
+}
+
+.checklist-row .item-skor {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Custom Radio Button */
+.radio-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0;
+}
+
+.radio-label input[type="radio"] {
+    display: none;
+}
+
+.radio-custom {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2.5px solid #D1D5DB;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: var(--white);
+}
+
+.radio-custom:hover {
+    border-color: var(--primary-purple-light);
+    transform: scale(1.1);
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom {
+    border-color: var(--primary-purple);
+    background: var(--primary-purple);
+    box-shadow: 0 2px 8px rgba(107, 70, 193, 0.35);
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--white);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* Selected row highlight */
+.checklist-row.scored {
+    background: rgba(107, 70, 193, 0.04);
+}
+
+/* Total Row */
+.total-row {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+}
+
+.total-row td {
+    padding: 1rem;
+    border: none;
+}
+
+.total-label {
+    text-align: right;
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--white);
+    letter-spacing: 0.5px;
+    padding-right: 1.5rem !important;
+}
+
+.total-value {
+    text-align: center;
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--white);
+    letter-spacing: 0.5px;
+}
+
+/* ===== Skor Summary Card ===== */
+.skor-summary {
+    margin-top: 1.5rem;
+}
+
+.skor-summary-card {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    background: var(--white);
+    border: 2px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.skor-summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: #FAFAFA;
+    transition: transform 0.2s ease;
+}
+
+.skor-summary-item:hover {
+    transform: translateY(-2px);
+}
+
+.skor-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.skor-value {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.skor-highlight {
+    color: var(--primary-purple);
+}
+
+.skor-persen {
+    color: var(--teal);
+}
+
+.skor-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: #F3F4F6;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+}
+
+/* Kategori Badges */
+.skor-badge.kategori-kompeten {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    color: #065F46;
+    border: 1px solid #6EE7B7;
+}
+
+.skor-badge.kategori-cukup {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    color: #92400E;
+    border: 1px solid #FCD34D;
+}
+
+.skor-badge.kategori-kurang {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+
+/* Print Button */
+.btn-print {
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, #2563EB 0%, #60A5FA 100%);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
+}
+
+.btn-print:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+}
+
+/* Notification (reuse from skrining-admisi) */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    max-width: 400px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-success {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #6EE7B7;
+}
+
+.notification-error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+
+.notification-info {
+    background: #DBEAFE;
+    color: #1E40AF;
+    border: 1px solid #93C5FD;
+}
+
+/* ===== Print Styles ===== */
+@media print {
+    .sidebar,
+    .top-header,
+    .form-actions,
+    .btn-print,
+    .skor-summary {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .peristi-content {
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    .checklist-table-wrapper {
+        box-shadow: none !important;
+        border: 2px solid #333 !important;
+    }
+
+    .checklist-table th,
+    .checklist-table td {
+        border: 1px solid #333 !important;
+    }
+
+    .radio-custom {
+        border: 2px solid #333;
+    }
+
+    .radio-label input[type="radio"]:checked + .radio-custom {
+        background: #333;
+        border-color: #333;
+    }
+
+    .form-section-title,
+    .form-section-subtitle {
+        color: #333 !important;
+    }
+
+    .checklist-table thead tr:first-child,
+    .checklist-table thead tr.sub-header {
+        background: #333 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .section-header {
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .total-row {
+        background: #333 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .skor-summary-card {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .checklist-table th.col-aspek {
+        min-width: 200px;
+    }
+
+    .form-actions {
+        flex-wrap: wrap;
+    }
+
+    .form-actions button {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .skor-summary-card {
+        grid-template-columns: 1fr;
+    }
+
+    .skor-value {
+        font-size: 1.3rem;
+    }
+}

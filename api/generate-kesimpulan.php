@@ -52,6 +52,40 @@ if ($tipeFaskes === 'puskesmas') {
 $apiKey = OPENAI_API_KEY;
 $model = OPENAI_MODEL;
 
+// Determine overall risk level (highest among the three aspects) for RS recommendations
+$riskLevels = ['RENDAH' => 1, 'SEDANG' => 2, 'TINGGI' => 3];
+$overallRiskScore = max(
+    $riskLevels[$aspekMaternal] ?? 1,
+    $riskLevels[$aspekJanin] ?? 1,
+    $riskLevels[$aspekPenyulit] ?? 1
+);
+$overallRisk = array_search($overallRiskScore, $riskLevels);
+
+// Risk-based protocol recommendations for RS (Rumah Sakit)
+$rekomendasiProtokol = '';
+if ($tipeFaskes === 'rs') {
+    if ($overallRisk === 'RENDAH') {
+        $rekomendasiProtokol = "
+PROTOKOL PENANGANAN RISIKO RENDAH yang WAJIB dicantumkan dalam kesimpulan:
+• Radian warmer dihidupkan saat ibu dipimpin meneran
+• Troli resusitasi dipastikan lengkap dan siap pakai
+• Edukasi ulang IMD
+• Tim resusitasi minimal 2 orang bidan/perawat/dokter dengan kompeten melakukan resusitasi neonatus";
+    } elseif ($overallRisk === 'SEDANG') {
+        $rekomendasiProtokol = "
+PROTOKOL PENANGANAN RISIKO SEDANG yang WAJIB dicantumkan dalam kesimpulan:
+• Tim resusitasi minimal 3 orang dengan lead dokter/SpA dan tim dokter/perawat/bidan yang kompeten
+• Melakukan resusitasi neonatus lanjut
+• Berikan informasi segera kepada orang tua bayi kemungkinan perawatan yang lebih komplek di tingkat intensif (NICU/HCU)";
+    } elseif ($overallRisk === 'TINGGI') {
+        $rekomendasiProtokol = "
+PROTOKOL PENANGANAN RISIKO TINGGI yang WAJIB dicantumkan dalam kesimpulan:
+• Tim resusitasi minimal 3 orang dengan lead Sp.A dan tim dokter/perawat/bidan yang kompeten
+• Melakukan resusitasi neonatus lanjut
+• Berikan informasi segera kepada orang tua bayi terkait kemungkinan perawatan yang lebih komplek di tingkat intensif (NICU)";
+    }
+}
+
 $prompt = "Kamu adalah {$roleDesc}. Berdasarkan data skrining admisi berikut, buatkan kesimpulan klinis yang komprehensif dan profesional dalam Bahasa Indonesia.
 
 DATA SKRINING ADMISI ({$namaFaskes}):
@@ -62,11 +96,13 @@ DATA SKRINING ADMISI ({$namaFaskes}):
 - Aspek Maternal: Risiko {$aspekMaternal}
 - Aspek Janin: Risiko {$aspekJanin}
 - Aspek Penyulit: Risiko {$aspekPenyulit}
+- Tingkat Risiko Keseluruhan: {$overallRisk}
+{$rekomendasiProtokol}
 
 Buatkan kesimpulan yang mencakup:
 1. Ringkasan kondisi pasien
-2. Analisis tingkat risiko keseluruhan berdasarkan ketiga aspek (maternal, janin, penyulit)
-3. Rekomendasi penanganan dan tindak lanjut yang sesuai
+2. Analisis tingkat risiko keseluruhan berdasarkan ketiga aspek (maternal, janin, penyulit) — tingkat risiko keseluruhan ditentukan oleh aspek tertinggi yaitu RISIKO {$overallRisk}
+3. Rekomendasi penanganan dan tindak lanjut yang sesuai — WAJIB menyertakan seluruh poin protokol penanganan sesuai tingkat risiko yang tercantum di atas
 4. Hal-hal yang perlu diwaspadai
 
 Format output sebagai teks naratif profesional medis (bukan dalam format markdown/bullet point). Tulis langsung kesimpulannya tanpa pembuka seperti 'Berikut kesimpulan...' dll.";

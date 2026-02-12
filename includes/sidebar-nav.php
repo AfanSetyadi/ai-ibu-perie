@@ -10,6 +10,7 @@ $pageMap = [
     'quality-improvement.php' => 'quality-improvement',
     'form-skrining-admisi-rs.php' => 'form-skrining-admisi-rs',
     'data-skrining-admisi-rs.php' => 'data-skrining-admisi-rs',
+    'checklist-resusitasi.php' => 'checklist-resusitasi',
     'form-skrining-admisi-puskesmas.php' => 'form-skrining-admisi-puskesmas',
     'data-skrining-admisi-puskesmas.php' => 'data-skrining-admisi-puskesmas'
 ];
@@ -42,6 +43,12 @@ $navGroups = [
                 'icon' => '🗂️',
                 'label' => 'Data Skrining Admisi',
                 'page' => 'data-skrining-admisi-rs'
+            ],
+            [
+                'href' => 'checklist-resusitasi.php',
+                'icon' => '✅',
+                'label' => 'Checklist Resusitasi',
+                'page' => 'checklist-resusitasi'
             ],
             [
                 'type' => 'item',
