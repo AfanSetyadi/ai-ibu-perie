@@ -131,16 +131,301 @@ document.addEventListener('DOMContentLoaded', function () {
         return { label: 'Kurang Kompeten', cls: 'kategori-kurang' };
     }
 
-    function renderChecklist(checklist) {
+    function showNotification(message, type) {
+        const msg = String(message || '');
+        if (!msg) return;
+
+        const t = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${t}`;
+        notification.innerHTML = `
+            <span class="notification-icon">${t === 'success' ? '✅' : t === 'error' ? '❌' : 'ℹ️'}</span>
+            <span>${escapeHtml(msg)}</span>
+        `;
+        document.body.appendChild(notification);
+
+        setTimeout(() => notification.classList.add('show'), 10);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    function computeChecklistMaxScore() {
+        return Object.values(CHECKLIST_BOBOT).reduce((sum, bobot) => sum + (Number(bobot || 0) * 2), 0);
+    }
+
+    function calculateChecklistScore(formEl) {
+        if (!formEl) return { totalSkor: 0, persentase: 0, itemsFilled: 0, maxScore: 0 };
+
+        const maxScore = computeChecklistMaxScore();
+        let totalSkor = 0;
+        let itemsFilled = 0;
+
+        for (let i = 1; i <= 24; i++) {
+            const selected = formEl.querySelector(`input[name="skor_${i}"]:checked`);
+            const row = formEl.querySelector(`tr[data-item="${i}"]`);
+            if (!selected) {
+                if (row) row.classList.remove('scored');
+                continue;
+            }
+
+            totalSkor += Number(selected.value) * (CHECKLIST_BOBOT[i] || 1);
+            itemsFilled++;
+            if (row) row.classList.add('scored');
+        }
+
+        const persentase = maxScore > 0 ? Math.round((totalSkor / maxScore) * 100) : 0;
+        return { totalSkor, persentase, itemsFilled, maxScore };
+    }
+
+    function setChecklistSummary(containerEl, summary) {
+        if (!containerEl) return;
+        const { totalSkor, persentase, itemsFilled, maxScore } = summary;
+
+        const el = (id) => containerEl.querySelector(`[data-role="${id}"]`);
+        const setText = (id, text) => {
+            const e = el(id);
+            if (e) e.textContent = String(text);
+        };
+
+        setText('skor_maksimal', maxScore);
+        setText('skor_diperoleh', totalSkor);
+        setText('jumlah_skor', totalSkor);
+        setText('persentase', persentase + '%');
+
+        const badge = el('kategori');
+        if (badge) {
+            badge.classList.remove('kategori-kompeten', 'kategori-cukup', 'kategori-kurang');
+            if (itemsFilled === 0) {
+                badge.textContent = 'Belum Dinilai';
+                badge.className = 'skor-badge';
+                return;
+            }
+            const kat = kategoriFromPersen(persentase);
+            badge.textContent = kat.label;
+            badge.className = 'skor-badge ' + kat.cls;
+        }
+    }
+
+    function buildChecklistFormRowsHtml() {
+        return CHECKLIST_ITEMS.map(it => {
+            if (it.section) {
+                return (
+                    '<tr class="section-header">' +
+                    `<td class="section-letter">${escapeHtml(it.section)}</td>` +
+                    `<td class="section-title" colspan="5"><em>${escapeHtml(it.title)}</em></td>` +
+                    '</tr>'
+                );
+            }
+
+            const bobot = CHECKLIST_BOBOT[it.no] || 1;
+            const name = `skor_${it.no}`;
+            return (
+                `<tr class="checklist-row" data-item="${it.no}" data-bobot="${bobot}">` +
+                `<td class="item-no">${it.no}.</td>` +
+                `<td class="item-text">${escapeHtml(it.text)}</td>` +
+                `<td class="item-bobot">${bobot}</td>` +
+                `<td class="item-skor"><label class="radio-label"><input type="radio" name="${name}" value="0"><span class="radio-custom"></span></label></td>` +
+                `<td class="item-skor"><label class="radio-label"><input type="radio" name="${name}" value="1"><span class="radio-custom"></span></label></td>` +
+                `<td class="item-skor"><label class="radio-label"><input type="radio" name="${name}" value="2"><span class="radio-custom"></span></label></td>` +
+                '</tr>'
+            );
+        }).join('');
+    }
+
+    function renderChecklistForm(containerEl, skrining) {
+        if (!containerEl) return;
+
+        const namaPasien = skrining?.nama_ibu || '-';
+        const noRm = skrining?.no_rm || '-';
+        const tanggal = skrining?.tanggal || '';
+
+        containerEl.innerHTML =
+            '<div class="py-4 px-5 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 mb-4 flex flex-col gap-1">' +
+                '<div class="font-bold">Checklist Resusitasi belum diisi.</div>' +
+                '<div>Silakan isi checklist di bawah ini, lalu simpan.</div>' +
+            '</div>' +
+            '<form id="detailChecklistForm" class="flex flex-col gap-4">' +
+                '<div class="grid grid-cols-1 md:grid-cols-3 gap-3">' +
+                    '<div class="py-4 px-5 bg-gray-50 border border-gray-200 rounded-xl">' +
+                        '<div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Pasien</div>' +
+                        `<div class="text-base font-semibold text-gray-800">${escapeHtml(namaPasien)}</div>` +
+                    '</div>' +
+                    '<div class="py-4 px-5 bg-gray-50 border border-gray-200 rounded-xl">' +
+                        '<div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">No RM</div>' +
+                        `<div class="text-base font-semibold text-gray-800">${escapeHtml(noRm)}</div>` +
+                    '</div>' +
+                    '<div class="py-4 px-5 bg-gray-50 border border-gray-200 rounded-xl">' +
+                        '<div class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Tanggal</div>' +
+                        `<div class="text-base font-semibold text-gray-800">${escapeHtml(tanggal || '-')}</div>` +
+                    '</div>' +
+                '</div>' +
+                '<div class="grid grid-cols-1 md:grid-cols-2 gap-3">' +
+                    '<div class="py-4 px-5 bg-white border border-gray-200 rounded-xl">' +
+                        '<label class="block text-sm font-bold text-gray-700 mb-1">Penilai</label>' +
+                        '<input name="penilai" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-purple-500" placeholder="Nama penilai..." required />' +
+                    '</div>' +
+                    '<div class="py-4 px-5 bg-white border border-gray-200 rounded-xl">' +
+                        '<label class="block text-sm font-bold text-gray-700 mb-1">Catatan</label>' +
+                        '<textarea name="catatan" rows="2" class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:outline-none focus:border-purple-500" placeholder="Catatan tambahan (opsional)..."></textarea>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="skor-summary">' +
+                    '<div class="skor-summary-card">' +
+                        '<div class="skor-summary-item">' +
+                            '<span class="skor-label">Skor Maksimal</span>' +
+                            '<span class="skor-value" data-role="skor_maksimal">0</span>' +
+                        '</div>' +
+                        '<div class="skor-summary-item">' +
+                            '<span class="skor-label">Skor Diperoleh</span>' +
+                            '<span class="skor-value skor-highlight" data-role="skor_diperoleh">0</span>' +
+                        '</div>' +
+                        '<div class="skor-summary-item">' +
+                            '<span class="skor-label">Persentase</span>' +
+                            '<span class="skor-value skor-persen" data-role="persentase">0%</span>' +
+                        '</div>' +
+                        '<div class="skor-summary-item">' +
+                            '<span class="skor-label">Kategori</span>' +
+                            '<span class="skor-badge" data-role="kategori">Belum Dinilai</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="checklist-table-wrapper">' +
+                    '<table class="checklist-table">' +
+                        '<thead>' +
+                            '<tr>' +
+                                '<th class="col-no">No</th>' +
+                                '<th class="col-aspek">Aspek Ketrampilan yang Dinilai</th>' +
+                                '<th class="col-bobot">Bobot</th>' +
+                                '<th class="col-skor" colspan="3">Skor</th>' +
+                            '</tr>' +
+                            '<tr class="sub-header">' +
+                                '<th></th><th></th><th></th>' +
+                                '<th class="col-skor-val">0</th>' +
+                                '<th class="col-skor-val">1</th>' +
+                                '<th class="col-skor-val">2</th>' +
+                            '</tr>' +
+                        '</thead>' +
+                        '<tbody>' +
+                            buildChecklistFormRowsHtml() +
+                            '<tr class="total-row">' +
+                                '<td colspan="3" class="total-label">JUMLAH SKOR</td>' +
+                                '<td colspan="3" class="total-value" data-role="jumlah_skor">0</td>' +
+                            '</tr>' +
+                        '</tbody>' +
+                    '</table>' +
+                '</div>' +
+                '<div class="flex flex-col md:flex-row gap-3 justify-end pt-2">' +
+                    '<button type="button" class="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-gray-100 text-gray-700 border-2 border-gray-200 rounded-xl text-sm font-semibold hover:bg-gray-200" data-role="reset_btn">Reset</button>' +
+                    '<button type="submit" class="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-gradient-to-br from-purple-700 to-purple-500 text-white border-none rounded-xl text-sm font-semibold shadow-md shadow-purple-600/30 hover:shadow-lg hover:shadow-purple-600/40" data-role="save_btn">Simpan Checklist</button>' +
+                '</div>' +
+            '</form>';
+
+        const formEl = containerEl.querySelector('#detailChecklistForm');
+        if (!formEl) return;
+
+        const recalc = () => {
+            const summary = calculateChecklistScore(formEl);
+            setChecklistSummary(containerEl, summary);
+        };
+
+        formEl.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', recalc));
+        const resetBtn = containerEl.querySelector('[data-role="reset_btn"]');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (!confirm('Apakah Anda yakin ingin mereset checklist?')) return;
+                formEl.reset();
+                formEl.querySelectorAll('.checklist-row.scored').forEach(row => row.classList.remove('scored'));
+                recalc();
+                showNotification('Checklist berhasil direset.', 'info');
+            });
+        }
+
+        formEl.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const penilai = formEl.querySelector('[name="penilai"]')?.value?.trim() || '';
+            if (!penilai) {
+                showNotification('Harap isi nama penilai.', 'error');
+                return;
+            }
+
+            let allScored = true;
+            for (let i = 1; i <= 24; i++) {
+                if (!formEl.querySelector(`input[name="skor_${i}"]:checked`)) {
+                    allScored = false;
+                    break;
+                }
+            }
+            if (!allScored && !confirm('Belum semua item dinilai. Apakah Anda tetap ingin menyimpan?')) return;
+
+            const scores = {};
+            for (let i = 1; i <= 24; i++) {
+                const selected = formEl.querySelector(`input[name="skor_${i}"]:checked`);
+                scores[`skor_${i}`] = selected ? Number(selected.value) : null;
+            }
+
+            const summary = calculateChecklistScore(formEl);
+            const payload = {
+                nama_pasien: namaPasien,
+                no_rm: noRm,
+                tanggal: tanggal,
+                penilai: penilai,
+                catatan: formEl.querySelector('[name="catatan"]')?.value || '',
+                scores: scores,
+                total_skor: summary.totalSkor,
+                skor_maksimal: summary.maxScore,
+                persentase: summary.persentase,
+                skrining_id: skrining?.id ? Number(skrining.id) : null,
+            };
+
+            const saveBtn = containerEl.querySelector('[data-role="save_btn"]');
+            const originalText = saveBtn?.textContent || '';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Menyimpan...';
+            }
+
+            try {
+                const response = await fetch('api/checklist/save.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (!response.ok || result.error) {
+                    throw new Error(result.error || 'Gagal menyimpan checklist');
+                }
+                showNotification('Checklist resusitasi berhasil disimpan!', 'success');
+                await loadDetail();
+            } catch (err) {
+                showNotification('Gagal menyimpan: ' + (err?.message || 'Unknown error'), 'error');
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText || 'Simpan Checklist';
+                }
+            }
+        });
+
+        recalc();
+    }
+
+    function renderChecklist(checklist, skrining) {
         const section = document.getElementById('sectionChecklist');
         const body = document.getElementById('detailChecklistBody');
         if (!section || !body) return;
 
-        if (!checklist) {
-            body.innerHTML =
-                '<div class="py-4 px-5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-600">' +
-                'Checklist Resusitasi belum diisi untuk data ini.' +
-                '</div>';
+        const hasAnyScore = (() => {
+            const scores = checklist?.scores;
+            if (!scores || typeof scores !== 'object') return false;
+            return Object.values(scores).some(v => v !== null && v !== undefined);
+        })();
+
+        if (!checklist || !hasAnyScore) {
+            renderChecklistForm(body, skrining);
             section.classList.remove('hidden');
             return;
         }
@@ -296,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (sectionKes) sectionKes.classList.remove('hidden');
         }
 
-        renderChecklist(d?.checklist || null);
+        renderChecklist(d?.checklist || null, d || null);
     }
 
     async function loadDetail() {
