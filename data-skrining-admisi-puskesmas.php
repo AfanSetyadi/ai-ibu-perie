@@ -121,17 +121,6 @@ $username = getCurrentUsername();
         </main>
     </div>
 
-    <!-- Modal Detail -->
-    <div class="modal" id="modalDetail">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Detail Skrining Admisi</h3>
-                <button class="btn-close" onclick="closeModal()">✕</button>
-            </div>
-            <div class="modal-body" id="modalBody"></div>
-        </div>
-    </div>
-    
     <script src="assets/js/dashboard.js"></script>
     <script>
         window.SKRINING_CONFIG = {

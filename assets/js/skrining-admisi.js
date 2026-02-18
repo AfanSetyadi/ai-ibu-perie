@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const klasifikasiIcon = document.getElementById('klasifikasiIcon');
     const klasifikasiLabel = document.getElementById('klasifikasiLabel');
 
+    // ===== Checklist Accordion Elements =====
+    const checklistAccordion = document.getElementById('checklistAccordion');
+    const accordionToggle = document.getElementById('accordionToggle');
+    const accordionBody = document.getElementById('accordionBody');
+    const accordionArrow = document.getElementById('accordionArrow');
+
     function autoResizeTextarea(textarea) {
         if (!textarea) return;
         textarea.style.height = 'auto';
@@ -137,7 +143,220 @@ document.addEventListener('DOMContentLoaded', function() {
         klasifikasiWrapper.style.display = 'block';
     }
 
-    // ===== Form Submission: Save → Generate AI → Save AI to DB =====
+    // ===== Checklist Accordion Logic =====
+    function showChecklistAccordion(skriningId, values) {
+        if (!checklistAccordion) return;
+
+        document.getElementById('checklistSkriningId').value = skriningId;
+        document.getElementById('checklistNoRm').value = values.no_rm;
+        document.getElementById('checklistNamaPasien').value = values.nama_ibu;
+        document.getElementById('checklistTanggal').value = values.tanggal;
+
+        checklistAccordion.style.display = 'block';
+        accordionBody.classList.add('open');
+        accordionArrow.textContent = '▲';
+
+        checklistAccordion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    if (accordionToggle) {
+        accordionToggle.addEventListener('click', function() {
+            const isOpen = accordionBody.classList.toggle('open');
+            accordionArrow.textContent = isOpen ? '▲' : '▼';
+        });
+    }
+
+    // ===== Checklist Score Calculation =====
+    const TOTAL_ITEMS = 24;
+    const bobotMap = {
+        1: 1, 2: 2, 3: 1, 4: 2, 5: 1, 6: 1,
+        7: 2, 8: 2, 9: 1, 10: 2, 11: 2, 12: 1, 13: 2, 14: 2, 15: 1,
+        16: 2, 17: 1, 18: 2, 19: 1,
+        20: 2, 21: 2, 22: 1, 23: 2, 24: 1
+    };
+
+    let maxScore = 0;
+    for (let i = 1; i <= TOTAL_ITEMS; i++) {
+        maxScore += bobotMap[i] * 2;
+    }
+
+    const skorMaksimalEl = document.getElementById('skorMaksimal');
+    if (skorMaksimalEl) skorMaksimalEl.textContent = maxScore;
+
+    function calculateChecklistScore() {
+        let totalSkor = 0;
+        let itemsFilled = 0;
+
+        for (let i = 1; i <= TOTAL_ITEMS; i++) {
+            const selected = document.querySelector(`input[name="skor_${i}"]:checked`);
+            const row = document.querySelector(`tr[data-item="${i}"]`);
+            if (selected) {
+                totalSkor += parseInt(selected.value) * bobotMap[i];
+                itemsFilled++;
+                if (row) row.classList.add('scored');
+            } else if (row) {
+                row.classList.remove('scored');
+            }
+        }
+
+        const jumlahSkorEl = document.getElementById('jumlahSkor');
+        const skorDiperolehEl = document.getElementById('skorDiperoleh');
+        const skorPersentaseEl = document.getElementById('skorPersentase');
+        const skorKategoriEl = document.getElementById('skorKategori');
+
+        if (jumlahSkorEl) jumlahSkorEl.textContent = totalSkor;
+        if (skorDiperolehEl) skorDiperolehEl.textContent = totalSkor;
+
+        const persentase = maxScore > 0 ? Math.round((totalSkor / maxScore) * 100) : 0;
+        if (skorPersentaseEl) skorPersentaseEl.textContent = persentase + '%';
+
+        if (skorKategoriEl) {
+            skorKategoriEl.classList.remove('kategori-kompeten', 'kategori-cukup', 'kategori-kurang');
+            if (itemsFilled === 0) {
+                skorKategoriEl.textContent = 'Belum Dinilai';
+                skorKategoriEl.className = 'skor-badge';
+            } else if (persentase >= 75) {
+                skorKategoriEl.textContent = 'Kompeten';
+                skorKategoriEl.className = 'skor-badge kategori-kompeten';
+            } else if (persentase >= 50) {
+                skorKategoriEl.textContent = 'Cukup Kompeten';
+                skorKategoriEl.className = 'skor-badge kategori-cukup';
+            } else {
+                skorKategoriEl.textContent = 'Kurang Kompeten';
+                skorKategoriEl.className = 'skor-badge kategori-kurang';
+            }
+        }
+
+        return { totalSkor, persentase, itemsFilled };
+    }
+
+    const allRadios = document.querySelectorAll('.checklist-table input[type="radio"]');
+    allRadios.forEach(function(radio) {
+        radio.addEventListener('change', calculateChecklistScore);
+    });
+
+    // ===== Checklist Form Submission =====
+    const formChecklist = document.getElementById('formChecklistResusitasi');
+    if (formChecklist) {
+        formChecklist.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const penilai = formChecklist.querySelector('[name="penilai"]')?.value?.trim() || '';
+            if (!penilai) {
+                showNotification('Harap isi nama penilai.', 'error');
+                return;
+            }
+
+            let allScored = true;
+            for (let i = 1; i <= TOTAL_ITEMS; i++) {
+                if (!document.querySelector(`input[name="skor_${i}"]:checked`)) {
+                    allScored = false;
+                    break;
+                }
+            }
+
+            if (!allScored && !confirm('Belum semua item dinilai. Apakah Anda tetap ingin menyimpan?')) {
+                return;
+            }
+
+            const scores = {};
+            for (let i = 1; i <= TOTAL_ITEMS; i++) {
+                const selected = document.querySelector(`input[name="skor_${i}"]:checked`);
+                scores[`skor_${i}`] = selected ? parseInt(selected.value) : null;
+            }
+
+            const { totalSkor, persentase } = calculateChecklistScore();
+
+            const payload = {
+                nama_pasien: document.getElementById('checklistNamaPasien').value,
+                no_rm: document.getElementById('checklistNoRm').value,
+                tanggal: document.getElementById('checklistTanggal').value,
+                penilai: penilai,
+                catatan: formChecklist.querySelector('[name="catatan"]')?.value || '',
+                scores: scores,
+                total_skor: totalSkor,
+                skor_maksimal: maxScore,
+                persentase: persentase,
+                skrining_id: parseInt(document.getElementById('checklistSkriningId').value) || null,
+            };
+
+            const btnSave = document.getElementById('btnSimpanChecklist');
+            if (btnSave) {
+                btnSave.disabled = true;
+                btnSave.textContent = 'Menyimpan...';
+            }
+
+            try {
+                const response = await fetch('api/checklist/save.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (!response.ok || result.error) {
+                    throw new Error(result.error || 'Gagal menyimpan data checklist');
+                }
+
+                showNotification('Data checklist resusitasi berhasil disimpan!', 'success');
+
+                setTimeout(function() {
+                    if (confirm('Data berhasil disimpan. Kembali ke Data Skrining Admisi RS?')) {
+                        window.location.href = config.dataPageUrl;
+                    } else {
+                        resetFullPage();
+                    }
+                }, 500);
+
+            } catch (error) {
+                showNotification('Gagal menyimpan checklist: ' + error.message, 'error');
+            } finally {
+                if (btnSave) {
+                    btnSave.disabled = false;
+                    btnSave.textContent = 'Simpan Checklist';
+                }
+            }
+        });
+    }
+
+    // ===== Reset Checklist Button =====
+    const btnResetChecklist = document.getElementById('btnResetChecklist');
+    if (btnResetChecklist) {
+        btnResetChecklist.addEventListener('click', function() {
+            if (!confirm('Apakah Anda yakin ingin mereset checklist?')) return;
+            if (formChecklist) formChecklist.reset();
+            document.querySelectorAll('.checklist-row.scored').forEach(function(row) {
+                row.classList.remove('scored');
+            });
+            calculateChecklistScore();
+            showNotification('Checklist berhasil direset.', 'info');
+        });
+    }
+
+    function resetFullPage() {
+        const formSkrining = document.getElementById('formSkriningAdmisi');
+        if (formSkrining) formSkrining.reset();
+        if (kesimpulanField) {
+            kesimpulanField.value = '';
+            kesimpulanField.style.height = 'auto';
+        }
+        if (klasifikasiWrapper) klasifikasiWrapper.style.display = 'none';
+        if (checklistAccordion) checklistAccordion.style.display = 'none';
+        if (formChecklist) formChecklist.reset();
+        document.querySelectorAll('.checklist-row.scored').forEach(function(row) {
+            row.classList.remove('scored');
+        });
+        calculateChecklistScore();
+
+        const btnSkrining = document.getElementById('btnSimpanSkrining');
+        if (btnSkrining) {
+            btnSkrining.disabled = false;
+            btnSkrining.textContent = 'Simpan Data Skrining';
+        }
+    }
+
+    // ===== Form Submission: Save → Generate AI → Save AI → Open Checklist =====
     const formSkrining = document.getElementById('formSkriningAdmisi');
     if (formSkrining) {
         formSkrining.addEventListener('submit', async function(e) {
@@ -149,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const btnSave = formSkrining.querySelector('.btn-save');
+            const btnSave = document.getElementById('btnSimpanSkrining');
             const setButtonState = (disabled, text) => {
                 if (!btnSave) return;
                 btnSave.disabled = disabled;
@@ -159,12 +378,10 @@ document.addEventListener('DOMContentLoaded', function() {
             setButtonState(true, 'Menyimpan data...');
 
             try {
-                // Step 1: Save form data to DB (without kesimpulan)
                 const saveResult = await saveToDatabase(values);
                 const recordId = saveResult.id;
                 showNotification('Data berhasil disimpan. Generating kesimpulan AI...', 'success');
 
-                // Step 2: Generate AI kesimpulan
                 setButtonState(true, 'Generating AI...');
                 if (kesimpulanField) {
                     kesimpulanField.value = 'Menganalisis data skrining dengan AI...';
@@ -175,37 +392,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const kesimpulan = await generateAI(values);
 
-                // Show typing animation
                 if (kesimpulanField) {
                     await typeKesimpulan(kesimpulan);
                 }
 
-                // Step 3: Save AI kesimpulan to DB
                 setButtonState(true, 'Menyimpan kesimpulan AI...');
                 await saveKesimpulanToDatabase(recordId, kesimpulan);
 
-                showNotification('Kesimpulan AI berhasil disimpan!', 'success');
+                showNotification('Kesimpulan AI berhasil disimpan! Silakan isi Checklist Resusitasi.', 'success');
                 setButtonState(true, 'Selesai ✓');
 
-                // Redirect / next action
                 if (config.tipeFaskes === 'rs') {
-                    sessionStorage.setItem('skriningPatientData', JSON.stringify({
-                        skrining_id: recordId,
-                        nama_pasien: values.nama_ibu,
-                        no_rm: values.no_rm,
-                        tanggal: values.tanggal
-                    }));
-                    setTimeout(() => { window.location.href = 'checklist-resusitasi.php'; }, 1500);
+                    showChecklistAccordion(recordId, values);
                 } else {
                     setTimeout(() => {
                         if (confirm('Data & kesimpulan AI berhasil disimpan. Isi form baru?')) {
-                            formSkrining.reset();
-                            if (kesimpulanField) {
-                                kesimpulanField.value = '';
-                                kesimpulanField.style.height = 'auto';
-                            }
-                            if (klasifikasiWrapper) klasifikasiWrapper.style.display = 'none';
-                            setButtonState(false, 'Simpan Data Skrining');
+                            resetFullPage();
                         } else {
                             window.location.href = config.dataPageUrl;
                         }
@@ -330,7 +532,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return div.innerHTML;
     }
 
-    // Make loadData globally accessible for delete refresh
     window._skriningLoadData = loadData;
 
     // ===== Notification =====
@@ -351,46 +552,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.showNotification = showNotification;
+
+    calculateChecklistScore();
 });
 
 // ===== Global Functions for Data Page =====
 
-async function viewDetail(id) {
-    const modal = document.getElementById('modalDetail');
-    const modalBody = document.getElementById('modalBody');
-    if (!modal || !modalBody) return;
-
-    modalBody.innerHTML = '<p style="text-align:center;">Memuat data...</p>';
-    modal.classList.add('active');
-
-    try {
-        const response = await fetch('api/skrining/get.php?id=' + id, {
-            credentials: 'include'
-        });
-        const result = await response.json();
-
-        if (!response.ok || result.error) {
-            throw new Error(result.error || 'Gagal memuat detail');
-        }
-
-        const d = result.data;
-        const tgl = new Date(d.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-        modalBody.innerHTML = `
-            <div class="detail-grid">
-                <div class="detail-item"><label>Hari / Tanggal</label><p>${tgl}</p></div>
-                <div class="detail-item"><label>No. Rekam Medis</label><p>${d.no_rm}</p></div>
-                <div class="detail-item"><label>Nama Ibu</label><p>${d.nama_ibu}</p></div>
-                <div class="detail-item"><label>Diagnosa Ibu</label><p>${d.diagnosa_ibu}</p></div>
-                <div class="detail-item"><label>Aspek Maternal</label><p>${d.aspek_maternal}</p></div>
-                <div class="detail-item"><label>Aspek Janin</label><p>${d.aspek_janin}</p></div>
-                <div class="detail-item detail-item-full"><label>Aspek Penyulit</label><p>${d.aspek_penyulit}</p></div>
-                ${d.kesimpulan ? `<div class="detail-item detail-item-full"><label>Kesimpulan AI</label><p>${d.kesimpulan}</p></div>` : ''}
-            </div>
-        `;
-    } catch (error) {
-        modalBody.innerHTML = `<p style="text-align:center;color:#e74c3c;">Gagal memuat: ${error.message}</p>`;
-    }
+function viewDetail(id) {
+    const config = window.SKRINING_CONFIG || {};
+    const detailUrl = config.detailPageUrl || ('detail-skrining-admisi-' + (config.tipeFaskes || 'rs') + '.php');
+    window.location.href = detailUrl + '?id=' + id;
 }
 
 async function deleteData(id) {
@@ -422,7 +593,3 @@ function editData(id) {
     window.showNotification('Fitur edit akan segera tersedia.', 'info');
 }
 
-function closeModal() {
-    const modal = document.getElementById('modalDetail');
-    if (modal) modal.classList.remove('active');
-}

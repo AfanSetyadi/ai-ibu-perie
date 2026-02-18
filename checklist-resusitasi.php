@@ -45,35 +45,8 @@ $username = getCurrentUsername();
                     </div>
                     <h3 class="form-section-title">📋 Checklist Aspek Ketrampilan Resusitasi</h3>
                     <form id="formChecklistResusitasi">
-                        <!-- Data Pasien -->
-                        <div class="form-section">
-                            <h4 class="form-section-subtitle">Data Pasien</h4>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Nama Bayi / Ibu</label>
-                                    <input type="text" name="nama_pasien" placeholder="Masukkan nama bayi / ibu" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>No. RM</label>
-                                    <input type="text" name="no_rm" placeholder="Masukkan No. Rekam Medis" required>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Hari / Tanggal</label>
-                                    <input type="date" name="tanggal" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Penilai</label>
-                                    <input type="text" name="penilai" placeholder="Nama penilai" required>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Tabel Checklist -->
-                        <div class="form-section">
-                            <h4 class="form-section-subtitle">Penilaian Ketrampilan</h4>
-                            
+                        <div class="form-section">                            
                             <div class="checklist-table-wrapper">
                                 <table class="checklist-table" id="checklistTable">
                                     <thead>
@@ -350,12 +323,6 @@ $username = getCurrentUsername();
                                     <textarea name="catatan" rows="3" placeholder="Tambahkan catatan jika diperlukan..."></textarea>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn-cancel" id="btnReset">Reset</button>
-                            <button type="button" class="btn-print" id="btnPrint">Cetak</button>
-                            <button type="submit" class="btn-save">Simpan Data</button>
                         </div>
                     </form>
                 </div>
