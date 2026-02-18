@@ -16,15 +16,16 @@ if (file_exists($envFile)) {
     }
 }
 
-// Database configuration (optional - untuk koneksi database di masa depan)
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+// Database configuration (PostgreSQL)
+define('DB_HOST', '10.10.1.90');
+define('DB_PORT', '5432');
+define('DB_USER', 'postgres');
+define('DB_PASS', 'postgres');
 define('DB_NAME', 'ai_ibu_perie');
 
 // OpenAI Configuration
 define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') ?: '');
-define('OPENAI_MODEL', getenv('OPENAI_MODEL') ?: 'chatgpt-4o-latest');
+define('OPENAI_MODEL', getenv('OPENAI_MODEL') ?: 'gpt-4o-mini-2024-07-18');
 
 // Check if user is logged in
 function isLoggedIn() {
@@ -51,5 +52,3 @@ function logout() {
     header('Location: login.php');
     exit();
 }
-?>
-

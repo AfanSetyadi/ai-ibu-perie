@@ -285,6 +285,29 @@
     border: 1px solid #FCA5A5;
 }
 
+/* Skrining Flow Banner */
+.skrining-flow-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem;
+    margin-bottom: 1.25rem;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #DBEAFE 0%, #EDE9FE 100%);
+    border: 1px solid #93C5FD;
+    color: #1E3A8A;
+    font-size: 0.9rem;
+}
+
+.skrining-flow-banner .banner-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.skrining-flow-banner .banner-text strong {
+    color: var(--primary-purple);
+}
+
 /* Print Button */
 .btn-print {
     padding: 0.75rem 2rem;

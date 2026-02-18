@@ -78,8 +78,9 @@ function loadDashboardData() {
 }
 
 function updateStats() {
-    // Simulate real-time data updates
-    const currentPatients = parseInt(document.getElementById('totalPatients').textContent) || 0;
+    const el = document.getElementById('totalPatients');
+    if (!el) return;
+    const currentPatients = parseInt(el.textContent) || 0;
     const newPatients = currentPatients + Math.floor(Math.random() * 3);
     
     const mockData = {
@@ -93,13 +94,18 @@ function updateStats() {
 }
 
 function updateStatsDisplay(data) {
-    document.getElementById('totalPatients').textContent = data.totalPatients;
-    document.getElementById('activeMNE').textContent = data.activeMNE;
-    document.getElementById('qualityScore').textContent = data.qualityScore + '%';
-    document.getElementById('bundleCompliance').textContent = data.bundleCompliance + '%';
+    const el = (id) => document.getElementById(id);
+    if (!el('totalPatients')) return;
+    el('totalPatients').textContent = data.totalPatients;
+    el('activeMNE').textContent = data.activeMNE;
+    el('qualityScore').textContent = data.qualityScore + '%';
+    el('bundleCompliance').textContent = data.bundleCompliance + '%';
 }
 
 function updateActivityList() {
+    const activityList = document.getElementById('activityList');
+    if (!activityList) return;
+
     const activities = [
         { icon: '📝', title: 'Data baru ditambahkan', time: '2 jam yang lalu' },
         { icon: '✅', title: 'Bundle compliance tercapai', time: '5 jam yang lalu' },
@@ -108,7 +114,6 @@ function updateActivityList() {
         { icon: '💙', title: 'MNE monitoring diperbarui', time: '3 hari yang lalu' }
     ];
     
-    const activityList = document.getElementById('activityList');
     activityList.innerHTML = activities.map(activity => `
         <div class="activity-item">
             <span class="activity-icon">${activity.icon}</span>

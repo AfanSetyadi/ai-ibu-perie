@@ -38,6 +38,11 @@ $username = getCurrentUsername();
             <!-- Form Checklist Resusitasi -->
             <div class="peristi-content">
                 <div class="form-container">
+                    <!-- Banner: alur dari Skrining Admisi RS -->
+                    <div class="skrining-flow-banner" id="skriningFlowBanner" style="display: none;">
+                        <span class="banner-icon">🔗</span>
+                        <span class="banner-text">Anda melanjutkan dari <strong>Form Skrining Admisi RS</strong>. Data pasien telah terisi otomatis.</span>
+                    </div>
                     <h3 class="form-section-title">📋 Checklist Aspek Ketrampilan Resusitasi</h3>
                     <form id="formChecklistResusitasi">
                         <!-- Data Pasien -->

@@ -9,183 +9,218 @@ document.addEventListener('DOMContentLoaded', function() {
         tipeFaskes: 'rs'
     };
 
-    // ===== AI Kesimpulan Generate (Form Page) =====
-    const btnGenerate = document.getElementById('btnGenerateKesimpulan');
+    // ===== Form Elements =====
     const kesimpulanField = document.getElementById('kesimpulanAI');
     const aspekMaternal = document.getElementById('aspekMaternal');
     const aspekJanin = document.getElementById('aspekJanin');
     const aspekPenyulit = document.getElementById('aspekPenyulit');
 
-    // Classification badge elements
     const klasifikasiWrapper = document.getElementById('klasifikasiRisiko');
     const klasifikasiBadge = document.getElementById('klasifikasiBadge');
     const klasifikasiIcon = document.getElementById('klasifikasiIcon');
     const klasifikasiLabel = document.getElementById('klasifikasiLabel');
 
-    if (btnGenerate && kesimpulanField) {
-        btnGenerate.addEventListener('click', function() {
-            generateKesimpulanAI();
-        });
-    }
-
-    // Auto-resize textarea helper
     function autoResizeTextarea(textarea) {
         if (!textarea) return;
         textarea.style.height = 'auto';
         textarea.style.height = textarea.scrollHeight + 'px';
     }
 
-    async function generateKesimpulanAI() {
-        // Get form values
-        const namaIbu = document.querySelector('[name="nama_ibu"]')?.value || '';
-        const noRM = document.querySelector('[name="no_rm"]')?.value || '';
-        const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
-        const diagnosaIbu = document.querySelector('[name="diagnosa_ibu"]')?.value || '';
-        const maternal = aspekMaternal?.value || '';
-        const janin = aspekJanin?.value || '';
-        const penyulit = aspekPenyulit?.value || '';
+    function getFormValues() {
+        return {
+            nama_ibu: document.querySelector('[name="nama_ibu"]')?.value?.trim() || '',
+            no_rm: document.querySelector('[name="no_rm"]')?.value?.trim() || '',
+            tanggal: document.querySelector('[name="tanggal"]')?.value || '',
+            diagnosa_ibu: document.querySelector('[name="diagnosa_ibu"]')?.value?.trim() || '',
+            aspek_maternal: aspekMaternal?.value || '',
+            aspek_janin: aspekJanin?.value || '',
+            aspek_penyulit: aspekPenyulit?.value || '',
+            tipe_faskes: config.tipeFaskes
+        };
+    }
 
-        // Validate required fields
-        if (!namaIbu || !noRM || !tanggal || !diagnosaIbu || !maternal || !janin || !penyulit) {
-            showNotification('Harap isi semua field terlebih dahulu sebelum generate kesimpulan.', 'error');
-            return;
+    function isFormComplete(values) {
+        return Object.values(values).every(v => v !== '');
+    }
+
+    async function saveToDatabase(values) {
+        const response = await fetch('api/skrining/save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(values)
+        });
+        const text = await response.text();
+        const result = JSON.parse(text);
+        if (!response.ok || result.error) {
+            throw new Error(result.error || 'Gagal menyimpan data');
         }
+        return result;
+    }
 
-        // Show loading state
-        btnGenerate.disabled = true;
-        btnGenerate.innerHTML = '<span class="ai-icon">⏳</span> Menghubungi AI...';
-        kesimpulanField.value = 'Menganalisis data skrining dengan AI...';
+    async function generateAI(values) {
+        const response = await fetch('api/generate-kesimpulan.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(values)
+        });
+        const data = await response.json();
+        if (!response.ok || data.error) {
+            throw new Error(data.error || 'Gagal mendapatkan kesimpulan dari AI');
+        }
+        return data.kesimpulan;
+    }
 
-        try {
-            const response = await fetch('api/generate-kesimpulan.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    nama_ibu: namaIbu,
-                    no_rm: noRM,
-                    tanggal: tanggal,
-                    diagnosa_ibu: diagnosaIbu,
-                    aspek_maternal: maternal,
-                    aspek_janin: janin,
-                    aspek_penyulit: penyulit,
-                    tipe_faskes: config.tipeFaskes
-                })
-            });
+    async function saveKesimpulanToDatabase(id, kesimpulan) {
+        const response = await fetch('api/skrining/update-kesimpulan.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id, kesimpulan })
+        });
+        const result = await response.json();
+        if (!response.ok || result.error) {
+            throw new Error(result.error || 'Gagal menyimpan kesimpulan AI');
+        }
+        return result;
+    }
 
-            const data = await response.json();
-
-            if (!response.ok || data.error) {
-                throw new Error(data.error || 'Gagal mendapatkan kesimpulan dari AI');
-            }
-
-            const kesimpulan = data.kesimpulan;
-
-            // Determine overall risk classification (highest of 3 aspects)
-            const riskLevels = { 'RENDAH': 1, 'SEDANG': 2, 'TINGGI': 3 };
-            const overallScore = Math.max(
-                riskLevels[maternal] || 1,
-                riskLevels[janin] || 1,
-                riskLevels[penyulit] || 1
-            );
-            const riskMap = { 1: 'RENDAH', 2: 'SEDANG', 3: 'TINGGI' };
-            const overallRisk = riskMap[overallScore];
-
-            // Show classification badge
-            showKlasifikasiBadge(overallRisk);
-
-            // Typing animation
+    function typeKesimpulan(kesimpulan) {
+        return new Promise(resolve => {
             kesimpulanField.value = '';
             let i = 0;
-            const typingSpeed = 10;
+            const TYPING_SPEED = 10;
             function typeChar() {
                 if (i < kesimpulan.length) {
                     kesimpulanField.value += kesimpulan.charAt(i);
                     i++;
                     autoResizeTextarea(kesimpulanField);
-                    setTimeout(typeChar, typingSpeed);
+                    setTimeout(typeChar, TYPING_SPEED);
                 } else {
-                    btnGenerate.disabled = false;
-                    btnGenerate.innerHTML = '<span class="ai-icon">🤖</span> Generate Ulang Kesimpulan';
-                    showNotification('Kesimpulan berhasil di-generate oleh AI!', 'success');
                     autoResizeTextarea(kesimpulanField);
+                    resolve();
                 }
             }
             typeChar();
-
-        } catch (error) {
-            console.error('AI Generate Error:', error);
-            kesimpulanField.value = '';
-            btnGenerate.disabled = false;
-            btnGenerate.innerHTML = '<span class="ai-icon">🤖</span> Generate Kesimpulan dengan AI';
-            showNotification('Gagal: ' + error.message, 'error');
-        }
-    }
-
-    // ===== Klasifikasi Badge Display =====
-    function showKlasifikasiBadge(level) {
-        if (!klasifikasiWrapper || !klasifikasiBadge || !klasifikasiIcon || !klasifikasiLabel) return;
-
-        // Remove previous class
-        klasifikasiBadge.classList.remove('klasifikasi-rendah', 'klasifikasi-sedang', 'klasifikasi-tinggi');
-
-        if (level === 'RENDAH') {
-            klasifikasiBadge.classList.add('klasifikasi-rendah');
-            klasifikasiIcon.textContent = '🟢';
-            klasifikasiLabel.textContent = 'Rendah';
-        } else if (level === 'SEDANG') {
-            klasifikasiBadge.classList.add('klasifikasi-sedang');
-            klasifikasiIcon.textContent = '🟡';
-            klasifikasiLabel.textContent = 'Sedang';
-        } else if (level === 'TINGGI') {
-            klasifikasiBadge.classList.add('klasifikasi-tinggi');
-            klasifikasiIcon.textContent = '🔴';
-            klasifikasiLabel.textContent = 'Tinggi';
-        }
-
-        klasifikasiWrapper.style.display = 'block';
-    }
-
-    // ===== Form Submission (Form Page) =====
-    const formSkrining = document.getElementById('formSkriningAdmisi');
-    if (formSkrining) {
-        formSkrining.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-
-            // Save to localStorage using config key
-            let skriningData = JSON.parse(localStorage.getItem(config.storageKey) || '[]');
-            data.id = Date.now();
-            data.created_at = new Date().toLocaleString('id-ID');
-            skriningData.push(data);
-            localStorage.setItem(config.storageKey, JSON.stringify(skriningData));
-
-            // Show success message
-            showNotification('Data skrining admisi berhasil disimpan!', 'success');
-
-            // Reset form
-            setTimeout(() => {
-                    if (confirm('Data berhasil disimpan. Apakah Anda ingin mengisi form baru?')) {
-                    formSkrining.reset();
-                    if (kesimpulanField) {
-                        kesimpulanField.value = '';
-                        kesimpulanField.style.height = 'auto';
-                    }
-                    if (klasifikasiWrapper) klasifikasiWrapper.style.display = 'none';
-                } else {
-                    window.location.href = config.dataPageUrl;
-                }
-            }, 500);
         });
     }
 
-    // ===== Cancel Button (Form Page) =====
+    function computeOverallRisk(maternal, janin, penyulit) {
+        const RISK_LEVELS = { 'RENDAH': 1, 'SEDANG': 2, 'TINGGI': 3 };
+        const RISK_MAP = { 1: 'RENDAH', 2: 'SEDANG', 3: 'TINGGI' };
+        const score = Math.max(
+            RISK_LEVELS[maternal] || 1,
+            RISK_LEVELS[janin] || 1,
+            RISK_LEVELS[penyulit] || 1
+        );
+        return RISK_MAP[score];
+    }
+
+    function showKlasifikasiBadge(level) {
+        if (!klasifikasiWrapper || !klasifikasiBadge || !klasifikasiIcon || !klasifikasiLabel) return;
+
+        klasifikasiBadge.classList.remove('klasifikasi-rendah', 'klasifikasi-sedang', 'klasifikasi-tinggi');
+
+        const mapping = {
+            'RENDAH': { cls: 'klasifikasi-rendah', icon: '🟢', text: 'Rendah' },
+            'SEDANG': { cls: 'klasifikasi-sedang', icon: '🟡', text: 'Sedang' },
+            'TINGGI': { cls: 'klasifikasi-tinggi', icon: '🔴', text: 'Tinggi' },
+        };
+
+        const m = mapping[level];
+        if (!m) return;
+
+        klasifikasiBadge.classList.add(m.cls);
+        klasifikasiIcon.textContent = m.icon;
+        klasifikasiLabel.textContent = m.text;
+        klasifikasiWrapper.style.display = 'block';
+    }
+
+    // ===== Form Submission: Save → Generate AI → Save AI to DB =====
+    const formSkrining = document.getElementById('formSkriningAdmisi');
+    if (formSkrining) {
+        formSkrining.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const values = getFormValues();
+            if (!isFormComplete(values)) {
+                showNotification('Harap isi semua field terlebih dahulu.', 'error');
+                return;
+            }
+
+            const btnSave = formSkrining.querySelector('.btn-save');
+            const setButtonState = (disabled, text) => {
+                if (!btnSave) return;
+                btnSave.disabled = disabled;
+                btnSave.textContent = text;
+            };
+
+            setButtonState(true, 'Menyimpan data...');
+
+            try {
+                // Step 1: Save form data to DB (without kesimpulan)
+                const saveResult = await saveToDatabase(values);
+                const recordId = saveResult.id;
+                showNotification('Data berhasil disimpan. Generating kesimpulan AI...', 'success');
+
+                // Step 2: Generate AI kesimpulan
+                setButtonState(true, 'Generating AI...');
+                if (kesimpulanField) {
+                    kesimpulanField.value = 'Menganalisis data skrining dengan AI...';
+                }
+
+                const overallRisk = computeOverallRisk(values.aspek_maternal, values.aspek_janin, values.aspek_penyulit);
+                showKlasifikasiBadge(overallRisk);
+
+                const kesimpulan = await generateAI(values);
+
+                // Show typing animation
+                if (kesimpulanField) {
+                    await typeKesimpulan(kesimpulan);
+                }
+
+                // Step 3: Save AI kesimpulan to DB
+                setButtonState(true, 'Menyimpan kesimpulan AI...');
+                await saveKesimpulanToDatabase(recordId, kesimpulan);
+
+                showNotification('Kesimpulan AI berhasil disimpan!', 'success');
+                setButtonState(true, 'Selesai ✓');
+
+                // Redirect / next action
+                if (config.tipeFaskes === 'rs') {
+                    sessionStorage.setItem('skriningPatientData', JSON.stringify({
+                        skrining_id: recordId,
+                        nama_pasien: values.nama_ibu,
+                        no_rm: values.no_rm,
+                        tanggal: values.tanggal
+                    }));
+                    setTimeout(() => { window.location.href = 'checklist-resusitasi.php'; }, 1500);
+                } else {
+                    setTimeout(() => {
+                        if (confirm('Data & kesimpulan AI berhasil disimpan. Isi form baru?')) {
+                            formSkrining.reset();
+                            if (kesimpulanField) {
+                                kesimpulanField.value = '';
+                                kesimpulanField.style.height = 'auto';
+                            }
+                            if (klasifikasiWrapper) klasifikasiWrapper.style.display = 'none';
+                            setButtonState(false, 'Simpan Data Skrining');
+                        } else {
+                            window.location.href = config.dataPageUrl;
+                        }
+                    }, 1500);
+                }
+
+            } catch (error) {
+                console.error('Submit error:', error);
+                showNotification('Gagal: ' + error.message, 'error');
+                setButtonState(false, 'Simpan Data Skrining');
+            }
+        });
+    }
+
+    // ===== Cancel Button =====
     const btnBatal = document.getElementById('btnBatal');
     if (btnBatal) {
         btnBatal.addEventListener('click', function() {
@@ -195,48 +230,108 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ===== Search & Filter (Data Page) =====
+    // ===== Data Page: Load & Render =====
+    const tableBody = document.getElementById('tableBody');
     const searchInput = document.getElementById('searchInput');
     const filterMaternal = document.getElementById('filterMaternal');
     const filterJanin = document.getElementById('filterJanin');
-    const tableBody = document.getElementById('tableBody');
 
-    if (searchInput) {
-        searchInput.addEventListener('input', filterTable);
-    }
-    if (filterMaternal) {
-        filterMaternal.addEventListener('change', filterTable);
-    }
-    if (filterJanin) {
-        filterJanin.addEventListener('change', filterTable);
+    let debounceTimer = null;
+
+    if (tableBody) {
+        loadData();
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(loadData, 300);
+            });
+        }
+        if (filterMaternal) filterMaternal.addEventListener('change', loadData);
+        if (filterJanin) filterJanin.addEventListener('change', loadData);
     }
 
-    function filterTable() {
+    async function loadData() {
+        const params = new URLSearchParams({ tipe_faskes: config.tipeFaskes });
+
+        if (searchInput?.value) params.set('search', searchInput.value);
+        if (filterMaternal?.value) params.set('maternal', filterMaternal.value);
+        if (filterJanin?.value) params.set('janin', filterJanin.value);
+
+        try {
+            const response = await fetch('api/skrining/list.php?' + params.toString(), {
+                credentials: 'include'
+            });
+            const result = await response.json();
+
+            if (!response.ok || result.error) {
+                throw new Error(result.error || 'Gagal memuat data');
+            }
+
+            renderTable(result.data);
+            renderSummary(result.summary);
+
+        } catch (error) {
+            console.error('Load error:', error);
+            tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;">Gagal memuat data dari server.</td></tr>';
+        }
+    }
+
+    function renderTable(data) {
         if (!tableBody) return;
 
-        const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-        const maternalFilter = filterMaternal ? filterMaternal.value : '';
-        const janinFilter = filterJanin ? filterJanin.value : '';
+        if (!data || data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;">Belum ada data skrining.</td></tr>';
+            return;
+        }
 
-        const rows = tableBody.querySelectorAll('tr');
+        const badgeClass = {
+            'RENDAH': 'status-active',
+            'SEDANG': 'status-pending',
+            'TINGGI': 'status-inactive',
+        };
+        const badgeLabel = { 'RENDAH': 'Rendah', 'SEDANG': 'Sedang', 'TINGGI': 'Tinggi' };
 
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            if (cells.length === 0) return;
-
-            const noRM = cells[2] ? cells[2].textContent.toLowerCase() : '';
-            const nama = cells[3] ? cells[3].textContent.toLowerCase() : '';
-            const diagnosa = cells[4] ? cells[4].textContent.toLowerCase() : '';
-            const maternal = cells[5] ? cells[5].textContent.trim().toLowerCase() : '';
-            const janin = cells[6] ? cells[6].textContent.trim().toLowerCase() : '';
-
-            const matchSearch = !searchTerm || noRM.includes(searchTerm) || nama.includes(searchTerm) || diagnosa.includes(searchTerm);
-            const matchMaternal = !maternalFilter || maternal.includes(maternalFilter.toLowerCase());
-            const matchJanin = !janinFilter || janin.includes(janinFilter.toLowerCase());
-
-            row.style.display = (matchSearch && matchMaternal && matchJanin) ? '' : 'none';
-        });
+        tableBody.innerHTML = data.map((row, idx) => {
+            const tgl = new Date(row.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            return `<tr data-id="${row.id}">
+                <td>${idx + 1}</td>
+                <td>${tgl}</td>
+                <td>${escapeHtml(row.no_rm)}</td>
+                <td>${escapeHtml(row.nama_ibu)}</td>
+                <td>${escapeHtml(row.diagnosa_ibu)}</td>
+                <td><span class="status-badge ${badgeClass[row.aspek_maternal] || ''}">${badgeLabel[row.aspek_maternal] || row.aspek_maternal}</span></td>
+                <td><span class="status-badge ${badgeClass[row.aspek_janin] || ''}">${badgeLabel[row.aspek_janin] || row.aspek_janin}</span></td>
+                <td><span class="status-badge ${badgeClass[row.aspek_penyulit] || ''}">${badgeLabel[row.aspek_penyulit] || row.aspek_penyulit}</span></td>
+                <td>
+                    <button class="btn-action btn-view" onclick="viewDetail(${row.id})">👁️ Lihat</button>
+                    <button class="btn-action btn-delete" onclick="deleteData(${row.id})">🗑️ Hapus</button>
+                </td>
+            </tr>`;
+        }).join('');
     }
+
+    function renderSummary(summary) {
+        if (!summary) return;
+        const el = (id, val) => {
+            const e = document.getElementById(id);
+            if (e) e.textContent = val;
+        };
+        el('totalData', summary.total);
+        el('totalRendah', summary.rendah);
+        el('totalSedang', summary.sedang);
+        el('totalTinggi', summary.tinggi);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // Make loadData globally accessible for delete refresh
+    window._skriningLoadData = loadData;
 
     // ===== Notification =====
     function showNotification(message, type) {
@@ -248,148 +343,86 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.body.appendChild(notification);
 
-        // Animate in
         setTimeout(() => notification.classList.add('show'), 10);
-
-        // Auto remove
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 300);
         }, 3000);
     }
 
-    // Make notification function globally available
     window.showNotification = showNotification;
 });
 
 // ===== Global Functions for Data Page =====
 
-function viewDetail(id) {
+async function viewDetail(id) {
     const modal = document.getElementById('modalDetail');
     const modalBody = document.getElementById('modalBody');
-
     if (!modal || !modalBody) return;
 
-    // Find the row data
-    const tableBody = document.getElementById('tableBody');
-    const rows = tableBody.querySelectorAll('tr');
-    let rowData = null;
+    modalBody.innerHTML = '<p style="text-align:center;">Memuat data...</p>';
+    modal.classList.add('active');
 
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length > 0 && cells[0].textContent.trim() == id) {
-            rowData = {
-                no: cells[0].textContent.trim(),
-                tanggal: cells[1].textContent.trim(),
-                no_rm: cells[2].textContent.trim(),
-                nama_ibu: cells[3].textContent.trim(),
-                diagnosa: cells[4].textContent.trim(),
-                maternal: cells[5].textContent.trim(),
-                janin: cells[6].textContent.trim(),
-                penyulit: cells[7].textContent.trim()
-            };
+    try {
+        const response = await fetch('api/skrining/get.php?id=' + id, {
+            credentials: 'include'
+        });
+        const result = await response.json();
+
+        if (!response.ok || result.error) {
+            throw new Error(result.error || 'Gagal memuat detail');
         }
-    });
 
-    if (rowData) {
+        const d = result.data;
+        const tgl = new Date(d.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
         modalBody.innerHTML = `
             <div class="detail-grid">
-                <div class="detail-item">
-                    <label>Hari / Tanggal</label>
-                    <p>${rowData.tanggal}</p>
-                </div>
-                <div class="detail-item">
-                    <label>No. Rekam Medis</label>
-                    <p>${rowData.no_rm}</p>
-                </div>
-                <div class="detail-item">
-                    <label>Nama Ibu</label>
-                    <p>${rowData.nama_ibu}</p>
-                </div>
-                <div class="detail-item">
-                    <label>Diagnosa Ibu</label>
-                    <p>${rowData.diagnosa}</p>
-                </div>
-                <div class="detail-item">
-                    <label>Aspek Maternal</label>
-                    <p>${rowData.maternal}</p>
-                </div>
-                <div class="detail-item">
-                    <label>Aspek Janin</label>
-                    <p>${rowData.janin}</p>
-                </div>
-                <div class="detail-item detail-item-full">
-                    <label>Aspek Penyulit</label>
-                    <p>${rowData.penyulit}</p>
-                </div>
+                <div class="detail-item"><label>Hari / Tanggal</label><p>${tgl}</p></div>
+                <div class="detail-item"><label>No. Rekam Medis</label><p>${d.no_rm}</p></div>
+                <div class="detail-item"><label>Nama Ibu</label><p>${d.nama_ibu}</p></div>
+                <div class="detail-item"><label>Diagnosa Ibu</label><p>${d.diagnosa_ibu}</p></div>
+                <div class="detail-item"><label>Aspek Maternal</label><p>${d.aspek_maternal}</p></div>
+                <div class="detail-item"><label>Aspek Janin</label><p>${d.aspek_janin}</p></div>
+                <div class="detail-item detail-item-full"><label>Aspek Penyulit</label><p>${d.aspek_penyulit}</p></div>
+                ${d.kesimpulan ? `<div class="detail-item detail-item-full"><label>Kesimpulan AI</label><p>${d.kesimpulan}</p></div>` : ''}
             </div>
         `;
+    } catch (error) {
+        modalBody.innerHTML = `<p style="text-align:center;color:#e74c3c;">Gagal memuat: ${error.message}</p>`;
     }
+}
 
-    modal.classList.add('active');
+async function deleteData(id) {
+    if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+
+    try {
+        const response = await fetch('api/skrining/delete.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id: id })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || result.error) {
+            throw new Error(result.error || 'Gagal menghapus');
+        }
+
+        window.showNotification('Data berhasil dihapus.', 'success');
+        if (window._skriningLoadData) window._skriningLoadData();
+
+    } catch (error) {
+        window.showNotification('Gagal menghapus: ' + error.message, 'error');
+    }
 }
 
 function editData(id) {
     window.showNotification('Fitur edit akan segera tersedia.', 'info');
 }
 
-function deleteData(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-        const tableBody = document.getElementById('tableBody');
-        const rows = tableBody.querySelectorAll('tr');
-
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            if (cells.length > 0 && cells[0].textContent.trim() == id) {
-                row.remove();
-            }
-        });
-
-        // Re-number remaining rows
-        const remainingRows = tableBody.querySelectorAll('tr');
-        remainingRows.forEach((row, index) => {
-            const firstCell = row.querySelector('td');
-            if (firstCell) firstCell.textContent = index + 1;
-        });
-
-        // Update summary
-        updateSummary();
-        window.showNotification('Data berhasil dihapus.', 'success');
-    }
-}
-
 function closeModal() {
     const modal = document.getElementById('modalDetail');
-    if (modal) {
-        modal.classList.remove('active');
-    }
-}
-
-function updateSummary() {
-    const tableBody = document.getElementById('tableBody');
-    if (!tableBody) return;
-
-    const rows = tableBody.querySelectorAll('tr');
-    let total = 0, rendah = 0, sedang = 0, tinggi = 0;
-
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length > 0) {
-            total++;
-            const maternal = cells[5] ? cells[5].textContent.trim().toLowerCase() : '';
-            if (maternal.includes('rendah')) rendah++;
-            else if (maternal.includes('sedang')) sedang++;
-            else if (maternal.includes('tinggi')) tinggi++;
-        }
-    });
-
-    const totalEl = document.getElementById('totalData');
-    const rendahEl = document.getElementById('totalRendah');
-    const sedangEl = document.getElementById('totalSedang');
-    const tinggiEl = document.getElementById('totalTinggi');
-
-    if (totalEl) totalEl.textContent = total;
-    if (rendahEl) rendahEl.textContent = rendah;
-    if (sedangEl) sedangEl.textContent = sedang;
-    if (tinggiEl) tinggiEl.textContent = tinggi;
+    if (modal) modal.classList.remove('active');
 }

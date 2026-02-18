@@ -81,7 +81,7 @@ $username = getCurrentUsername();
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <!-- Data akan diisi dari localStorage atau database -->
+                            <tr><td colspan="9" style="text-align:center;padding:2rem;">Memuat data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -128,9 +128,7 @@ $username = getCurrentUsername();
                 <h3>Detail Skrining Admisi</h3>
                 <button class="btn-close" onclick="closeModal()">✕</button>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Content will be filled by JS -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
     
@@ -146,4 +144,3 @@ $username = getCurrentUsername();
     <script src="assets/js/skrining-admisi.js"></script>
 </body>
 </html>
-

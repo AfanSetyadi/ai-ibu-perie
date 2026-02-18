@@ -81,86 +81,7 @@ $username = getCurrentUsername();
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <!-- Sample Data Row 1 -->
-                            <tr>
-                                <td>1</td>
-                                <td>09/02/2026</td>
-                                <td>2401234</td>
-                                <td>NY. SARI PUTRI</td>
-                                <td>G2P1A0 Hamil 38 mgg + PEB</td>
-                                <td><span class="status-badge status-inactive">Tinggi</span></td>
-                                <td><span class="status-badge status-pending">Sedang</span></td>
-                                <td><span class="status-badge status-inactive">Tinggi</span></td>
-                                <td>
-                                    <button class="btn-action btn-view" onclick="viewDetail(1)">👁️ Lihat</button>
-                                    <button class="btn-action btn-edit" onclick="editData(1)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteData(1)">🗑️ Hapus</button>
-                                </td>
-                            </tr>
-                            <!-- Sample Data Row 2 -->
-                            <tr>
-                                <td>2</td>
-                                <td>08/02/2026</td>
-                                <td>2401235</td>
-                                <td>NY. DEWI RAHAYU</td>
-                                <td>G1P0A0 Hamil 37 mgg</td>
-                                <td><span class="status-badge status-active">Rendah</span></td>
-                                <td><span class="status-badge status-active">Rendah</span></td>
-                                <td><span class="status-badge status-active">Rendah</span></td>
-                                <td>
-                                    <button class="btn-action btn-view" onclick="viewDetail(2)">👁️ Lihat</button>
-                                    <button class="btn-action btn-edit" onclick="editData(2)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteData(2)">🗑️ Hapus</button>
-                                </td>
-                            </tr>
-                            <!-- Sample Data Row 3 -->
-                            <tr>
-                                <td>3</td>
-                                <td>07/02/2026</td>
-                                <td>2401236</td>
-                                <td>NY. FITRI HANDAYANI</td>
-                                <td>G3P2A0 Hamil 34 mgg + KPD</td>
-                                <td><span class="status-badge status-pending">Sedang</span></td>
-                                <td><span class="status-badge status-inactive">Tinggi</span></td>
-                                <td><span class="status-badge status-pending">Sedang</span></td>
-                                <td>
-                                    <button class="btn-action btn-view" onclick="viewDetail(3)">👁️ Lihat</button>
-                                    <button class="btn-action btn-edit" onclick="editData(3)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteData(3)">🗑️ Hapus</button>
-                                </td>
-                            </tr>
-                            <!-- Sample Data Row 4 -->
-                            <tr>
-                                <td>4</td>
-                                <td>07/02/2026</td>
-                                <td>2401237</td>
-                                <td>NY. RINA WULANDARI</td>
-                                <td>G2P1A0 Hamil 39 mgg + Letak Sungsang</td>
-                                <td><span class="status-badge status-pending">Sedang</span></td>
-                                <td><span class="status-badge status-pending">Sedang</span></td>
-                                <td><span class="status-badge status-active">Rendah</span></td>
-                                <td>
-                                    <button class="btn-action btn-view" onclick="viewDetail(4)">👁️ Lihat</button>
-                                    <button class="btn-action btn-edit" onclick="editData(4)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteData(4)">🗑️ Hapus</button>
-                                </td>
-                            </tr>
-                            <!-- Sample Data Row 5 -->
-                            <tr>
-                                <td>5</td>
-                                <td>06/02/2026</td>
-                                <td>2401238</td>
-                                <td>NY. MEGA KARTINI</td>
-                                <td>G4P3A0 Hamil 32 mgg + Plasenta Previa</td>
-                                <td><span class="status-badge status-inactive">Tinggi</span></td>
-                                <td><span class="status-badge status-inactive">Tinggi</span></td>
-                                <td><span class="status-badge status-inactive">Tinggi</span></td>
-                                <td>
-                                    <button class="btn-action btn-view" onclick="viewDetail(5)">👁️ Lihat</button>
-                                    <button class="btn-action btn-edit" onclick="editData(5)">✏️ Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteData(5)">🗑️ Hapus</button>
-                                </td>
-                            </tr>
+                            <tr><td colspan="9" style="text-align:center;padding:2rem;">Memuat data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -171,28 +92,28 @@ $username = getCurrentUsername();
                         <span class="summary-icon">📊</span>
                         <div class="summary-info">
                             <h4>Total Data</h4>
-                            <p class="summary-number" id="totalData">5</p>
+                            <p class="summary-number" id="totalData">0</p>
                         </div>
                     </div>
                     <div class="summary-card summary-low">
                         <span class="summary-icon">🟢</span>
                         <div class="summary-info">
                             <h4>Maternal Rendah</h4>
-                            <p class="summary-number" id="totalRendah">1</p>
+                            <p class="summary-number" id="totalRendah">0</p>
                         </div>
                     </div>
                     <div class="summary-card summary-med">
                         <span class="summary-icon">🟡</span>
                         <div class="summary-info">
                             <h4>Maternal Sedang</h4>
-                            <p class="summary-number" id="totalSedang">2</p>
+                            <p class="summary-number" id="totalSedang">0</p>
                         </div>
                     </div>
                     <div class="summary-card summary-high">
                         <span class="summary-icon">🔴</span>
                         <div class="summary-info">
                             <h4>Maternal Tinggi</h4>
-                            <p class="summary-number" id="totalTinggi">2</p>
+                            <p class="summary-number" id="totalTinggi">0</p>
                         </div>
                     </div>
                 </div>
@@ -207,9 +128,7 @@ $username = getCurrentUsername();
                 <h3>Detail Skrining Admisi</h3>
                 <button class="btn-close" onclick="closeModal()">✕</button>
             </div>
-            <div class="modal-body" id="modalBody">
-                <!-- Content will be filled by JS -->
-            </div>
+            <div class="modal-body" id="modalBody"></div>
         </div>
     </div>
     
@@ -225,4 +144,3 @@ $username = getCurrentUsername();
     <script src="assets/js/skrining-admisi.js"></script>
 </body>
 </html>
-

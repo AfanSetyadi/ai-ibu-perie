@@ -13,22 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // Authentication logic
-    // For demo: accept any credentials
-    // In production, validate against database
-    // Example: username = "admin", password = "admin123"
-    
-    // For demo purposes, accept any credentials
-    // In production, uncomment below and implement proper authentication:
-    /*
-    if ($username === 'admin' && $password === 'admin123') {
-        // Valid credentials
-    } else {
+    if ($username !== 'admin' || $password !== 'rsudsda2026') {
         $_SESSION['error_message'] = 'Username atau password salah';
         header('Location: login.php');
         exit();
     }
-    */
     
     // Set session
     $_SESSION['isLoggedIn'] = true;

@@ -50,7 +50,7 @@ $username = getCurrentUsername();
                                 </div>
                                 <div class="form-group">
                                     <label>No. RM</label>
-                                    <input type="number" name="no_rm" placeholder="Masukkan No. Rekam Medis" required>
+                                    <input type="text" name="no_rm" placeholder="Masukkan No. Rekam Medis" pattern="[0-9A-Za-z/\-]+" required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -108,19 +108,16 @@ $username = getCurrentUsername();
                             </div>
                         </div>
 
-                        <!-- Bagian 3: Kesimpulan AI -->
+                        <!-- Bagian 3: Kesimpulan AI (auto-generated on submit) -->
                         <div class="form-section">
                             <h4 class="form-section-subtitle">Kesimpulan</h4>
                             <div class="ai-generate-wrapper">
-                                <button type="button" class="btn-ai-generate" id="btnGenerateKesimpulan">
-                                    <span class="ai-icon">🤖</span> Generate Kesimpulan dengan AI
-                                </button>
-                                <span class="ai-hint">Isi semua field di atas terlebih dahulu, lalu klik tombol untuk generate kesimpulan otomatis.</span>
+                                <span class="ai-hint">🤖 Kesimpulan AI akan otomatis di-generate setelah data disimpan.</span>
                             </div>
                             <div class="form-row">
                                 <div class="form-group form-group-full">
                                     <label>Kesimpulan <span class="ai-badge">AI Generated</span></label>
-                                    <textarea name="kesimpulan" id="kesimpulanAI" rows="5" placeholder="Kesimpulan akan di-generate oleh AI berdasarkan data yang telah diisi..." readonly></textarea>
+                                    <textarea name="kesimpulan" id="kesimpulanAI" rows="5" placeholder="Kesimpulan akan di-generate otomatis saat data disimpan..." readonly></textarea>
                                 </div>
                             </div>
                         </div>
