@@ -306,6 +306,30 @@ textarea[readonly] {
     color: #991B1B;
 }
 
+/* ===== Rekomendasi Rujukan RS (khusus Puskesmas) ===== */
+.rujukan-rs-wrapper {
+    margin: 0.75rem 0 1rem;
+}
+
+.rujukan-rs-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 650;
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    border: 2px solid #EF4444;
+    color: #991B1B;
+    animation: fadeInBadge 0.5s ease;
+}
+
+.rujukan-rs-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+}
+
 /* ===== Dynamic Height Textarea (Kesimpulan AI) ===== */
 #kesimpulanAI {
     min-height: 80px;

@@ -114,6 +114,19 @@ $username = getCurrentUsername();
                             <div class="ai-generate-wrapper">
                                 <span class="ai-hint">🤖 Kesimpulan AI akan otomatis di-generate setelah data disimpan.</span>
                             </div>
+                            <!-- Klasifikasi Risiko + Rekomendasi Rujukan (khusus Puskesmas) -->
+                            <div id="klasifikasiRisiko" class="klasifikasi-risiko-wrapper" style="display: none;">
+                                <div class="klasifikasi-risiko-badge" id="klasifikasiBadge">
+                                    <span class="klasifikasi-icon" id="klasifikasiIcon"></span>
+                                    <span class="klasifikasi-text">Klasifikasi Risiko: <strong id="klasifikasiLabel"></strong></span>
+                                </div>
+                            </div>
+                            <div id="rujukanRS" class="rujukan-rs-wrapper" style="display: none;">
+                                <div class="rujukan-rs-badge">
+                                    <span class="rujukan-rs-icon">🏥</span>
+                                    <span class="rujukan-rs-text">Perlu rujukan ke RS</span>
+                                </div>
+                            </div>
                             <div class="form-row">
                                 <div class="form-group form-group-full">
                                     <label>Kesimpulan <span class="ai-badge">AI Generated</span></label>
@@ -124,7 +137,7 @@ $username = getCurrentUsername();
 
                         <div class="form-actions">
                             <button type="button" class="btn-cancel" id="btnBatal">Batal</button>
-                            <button type="submit" class="btn-save">Simpan Data Skrining</button>
+                            <button type="submit" class="btn-save" id="btnSimpanSkrining">Simpan Data Skrining</button>
                         </div>
                     </form>
                 </div>

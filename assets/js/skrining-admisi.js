@@ -143,6 +143,13 @@ document.addEventListener('DOMContentLoaded', function() {
         klasifikasiWrapper.style.display = 'block';
     }
 
+    function showRujukanRS(level) {
+        if (config.tipeFaskes !== 'puskesmas') return;
+        const el = document.getElementById('rujukanRS');
+        if (!el) return;
+        el.style.display = level === 'TINGGI' ? 'block' : 'none';
+    }
+
     // ===== Checklist Accordion Logic =====
     function showChecklistAccordion(skriningId, values) {
         if (!checklistAccordion) return;
@@ -389,6 +396,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const overallRisk = computeOverallRisk(values.aspek_maternal, values.aspek_janin, values.aspek_penyulit);
                 showKlasifikasiBadge(overallRisk);
+                showRujukanRS(overallRisk);
 
                 const kesimpulan = await generateAI(values);
 

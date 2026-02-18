@@ -132,6 +132,10 @@ if ($id <= 0) {
                             <div class="flex items-center gap-2.5 mb-4 py-3 px-4 bg-gradient-to-br from-purple-700/[0.07] to-purple-500/[0.03] border-l-4 border-purple-600 rounded-r-xl">
                                 <span class="text-xl shrink-0">🤖</span>
                                 <h4 class="text-base font-bold text-purple-700 m-0 flex-1">Kesimpulan AI</h4>
+                                <span id="kesimpulanRiskPill" class="hidden items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold border"></span>
+                                <span id="kesimpulanRujukanPill" class="hidden items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold border bg-red-100 text-red-800 border-red-300">
+                                    🏥 Perlu rujukan ke RS
+                                </span>
                                 <span class="inline-block px-2 py-0.5 bg-gradient-to-br from-purple-600 to-purple-500 text-white rounded-md text-[0.7rem] font-semibold tracking-wide ml-auto">AI Generated</span>
                             </div>
                             <div class="py-6 px-6 pl-7 bg-gradient-to-br from-purple-700/[0.04] to-purple-500/[0.02] border border-purple-700/10 border-l-[5px] border-l-purple-500 rounded-r-xl text-[0.95rem] leading-[1.85] text-gray-700 whitespace-pre-wrap relative" id="detailKesimpulan">
@@ -173,7 +177,8 @@ if ($id <= 0) {
                 cardBg: ['bg-gradient-to-b', 'from-white', 'to-emerald-50'],
                 bar: 'bg-gradient-to-r from-emerald-400 to-emerald-300',
                 iconWrap: ['from-emerald-100', 'to-emerald-200'],
-                klas: 'bg-gradient-to-br from-emerald-100 to-emerald-200 border-2 border-emerald-400 text-emerald-900'
+                klas: 'bg-gradient-to-br from-emerald-100 to-emerald-200 border-2 border-emerald-400 text-emerald-900',
+                pill: 'bg-emerald-100 text-emerald-800 border-emerald-300'
             },
             'SEDANG': {
                 label: 'Sedang', icon: '🟡',
@@ -182,7 +187,8 @@ if ($id <= 0) {
                 cardBg: ['bg-gradient-to-b', 'from-white', 'to-amber-50'],
                 bar: 'bg-gradient-to-r from-amber-400 to-amber-300',
                 iconWrap: ['from-amber-100', 'to-amber-200'],
-                klas: 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-400 text-amber-900'
+                klas: 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-400 text-amber-900',
+                pill: 'bg-amber-100 text-amber-800 border-amber-300'
             },
             'TINGGI': {
                 label: 'Tinggi', icon: '🔴',
@@ -191,9 +197,27 @@ if ($id <= 0) {
                 cardBg: ['bg-gradient-to-b', 'from-white', 'to-red-50'],
                 bar: 'bg-gradient-to-r from-red-400 to-red-300',
                 iconWrap: ['from-red-100', 'to-red-200'],
-                klas: 'bg-gradient-to-br from-red-100 to-red-200 border-2 border-red-400 text-red-900'
+                klas: 'bg-gradient-to-br from-red-100 to-red-200 border-2 border-red-400 text-red-900',
+                pill: 'bg-red-100 text-red-800 border-red-300'
             }
         };
+
+        function renderKesimpulanRiskPills(level) {
+            const riskPill = document.getElementById('kesimpulanRiskPill');
+            const rujukanPill = document.getElementById('kesimpulanRujukanPill');
+            const info = RISK_CONFIG[level];
+            if (!riskPill || !rujukanPill || !info) return;
+
+            riskPill.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[0.75rem] font-bold border ' + info.pill;
+            riskPill.textContent = info.icon + ' ' + info.label;
+            riskPill.classList.remove('hidden');
+
+            if (level === 'TINGGI') {
+                rujukanPill.classList.remove('hidden');
+            } else {
+                rujukanPill.classList.add('hidden');
+            }
+        }
 
         async function loadDetail() {
             try {
@@ -247,6 +271,7 @@ if ($id <= 0) {
 
             if (d.kesimpulan) {
                 document.getElementById('detailKesimpulanText').textContent = d.kesimpulan;
+                renderKesimpulanRiskPills(overallRisk);
                 document.getElementById('sectionKesimpulan').classList.remove('hidden');
             }
         }

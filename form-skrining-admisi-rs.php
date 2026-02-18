@@ -138,11 +138,11 @@ $username = getCurrentUsername();
 
                     <!-- Checklist Resusitasi (collapsible, muncul setelah AI generate) -->
                     <div class="checklist-accordion" id="checklistAccordion" style="display: none;">
-                        <button type="button" class="accordion-toggle" id="accordionToggle">
+                        <!-- <button type="button" class="accordion-toggle" id="accordionToggle">
                             <span class="accordion-icon">📋</span>
                             <span class="accordion-title">Checklist Ketrampilan Resusitasi</span>
                             <span class="accordion-arrow" id="accordionArrow">▼</span>
-                        </button>
+                        </button> -->
                         <div class="accordion-body" id="accordionBody">
                             <form id="formChecklistResusitasi">
                                 <input type="hidden" name="skrining_id" id="checklistSkriningId" value="">
