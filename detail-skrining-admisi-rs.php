@@ -18,6 +18,7 @@ if ($id <= 0) {
     <title>Detail Skrining Admisi (Rumah Sakit) - IBu PeriE</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/peristi-bayi.css">
+    <link rel="stylesheet" href="assets/css/checklist-resusitasi.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
@@ -140,7 +141,15 @@ if ($id <= 0) {
                             </div>
                         </div>
 
-                        <div class="detail-actions-wrap flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mt-4 pt-6 border-t-2 border-purple-100">
+                        <div class="mb-2 hidden" id="sectionChecklist">
+                            <div class="flex items-center gap-2.5 mb-4 py-3 px-4 bg-gradient-to-br from-purple-700/[0.07] to-purple-500/[0.03] border-l-4 border-purple-600 rounded-r-xl">
+                                <span class="text-xl shrink-0">📋</span>
+                                <h4 class="text-base font-bold text-purple-700 m-0 flex-1">Checklist Ketrampilan Resusitasi</h4>
+                            </div>
+                            <div id="detailChecklistBody"></div>
+                        </div>
+
+                        <!-- <div class="detail-actions-wrap flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mt-4 pt-6 border-t-2 border-purple-100">
                             <a href="data-skrining-admisi-rs.php" class="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-gray-100 text-gray-600 border-2 border-gray-200 rounded-xl text-sm font-semibold no-underline cursor-pointer transition-all duration-200 hover:bg-gray-200 hover:border-gray-300 hover:-translate-x-1">
                                 <span>←</span> Kembali ke Data
                             </a>
@@ -152,7 +161,7 @@ if ($id <= 0) {
                                     <span>🗑️</span> Hapus Data
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -161,145 +170,11 @@ if ($id <= 0) {
     
     <script src="assets/js/dashboard.js"></script>
     <script>
-    (function() {
-        const RECORD_ID = <?php echo $id; ?>;
-        const BACK_URL = 'data-skrining-admisi-rs.php';
-
-        const RISK_CONFIG = {
-            'RENDAH': {
-                label: 'Rendah', icon: '🟢',
-                badge: 'bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-800 border-2 border-emerald-300',
-                cardBorder: 'border-emerald-200',
-                cardBg: ['bg-gradient-to-b', 'from-white', 'to-emerald-50'],
-                bar: 'bg-gradient-to-r from-emerald-400 to-emerald-300',
-                iconWrap: ['from-emerald-100', 'to-emerald-200'],
-                klas: 'bg-gradient-to-br from-emerald-100 to-emerald-200 border-2 border-emerald-400 text-emerald-900'
-            },
-            'SEDANG': {
-                label: 'Sedang', icon: '🟡',
-                badge: 'bg-gradient-to-br from-amber-100 to-amber-200 text-amber-800 border-2 border-amber-300',
-                cardBorder: 'border-amber-200',
-                cardBg: ['bg-gradient-to-b', 'from-white', 'to-amber-50'],
-                bar: 'bg-gradient-to-r from-amber-400 to-amber-300',
-                iconWrap: ['from-amber-100', 'to-amber-200'],
-                klas: 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-400 text-amber-900'
-            },
-            'TINGGI': {
-                label: 'Tinggi', icon: '🔴',
-                badge: 'bg-gradient-to-br from-red-100 to-red-200 text-red-800 border-2 border-red-300',
-                cardBorder: 'border-red-200',
-                cardBg: ['bg-gradient-to-b', 'from-white', 'to-red-50'],
-                bar: 'bg-gradient-to-r from-red-400 to-red-300',
-                iconWrap: ['from-red-100', 'to-red-200'],
-                klas: 'bg-gradient-to-br from-red-100 to-red-200 border-2 border-red-400 text-red-900'
-            }
+        window.DETAIL_SKRINING_CONFIG = {
+            recordId: <?php echo $id; ?>,
+            backUrl: 'data-skrining-admisi-rs.php'
         };
-
-        async function loadDetail() {
-            try {
-                const response = await fetch('api/skrining/get.php?id=' + RECORD_ID, { credentials: 'include' });
-                const result = await response.json();
-
-                if (!response.ok || result.error) {
-                    throw new Error(result.error || 'Gagal memuat detail');
-                }
-
-                renderDetail(result.data);
-            } catch (error) {
-                document.getElementById('detailLoading').classList.add('hidden');
-                const errEl = document.getElementById('detailError');
-                errEl.classList.remove('hidden');
-                errEl.textContent = 'Gagal memuat data: ' + error.message;
-            }
-        }
-
-        function renderDetail(d) {
-            document.getElementById('detailLoading').classList.add('hidden');
-            document.getElementById('detailContent').classList.remove('hidden');
-
-            const tgl = new Date(d.tanggal).toLocaleDateString('id-ID', {
-                weekday: 'long', day: '2-digit', month: 'long', year: 'numeric'
-            });
-
-            document.getElementById('detailTanggal').textContent = tgl;
-            document.getElementById('detailNoRm').textContent = 'RM: ' + d.no_rm;
-            document.getElementById('detailNamaIbu').textContent = d.nama_ibu;
-            document.getElementById('detailDiagnosa').textContent = d.diagnosa_ibu;
-
-            renderRiskBadge('Maternal', d.aspek_maternal);
-            renderRiskBadge('Janin', d.aspek_janin);
-            renderRiskBadge('Penyulit', d.aspek_penyulit);
-
-            const overallRisk = computeOverallRisk(d.aspek_maternal, d.aspek_janin, d.aspek_penyulit);
-            const riskInfo = RISK_CONFIG[overallRisk];
-            if (riskInfo) {
-                const klasEl = document.getElementById('detailKlasifikasi');
-                klasEl.innerHTML =
-                    '<div class="flex items-center gap-4 py-5 px-6 rounded-xl ' + riskInfo.klas + '">' +
-                        '<span class="text-4xl shrink-0">' + riskInfo.icon + '</span>' +
-                        '<div class="flex flex-col gap-0.5">' +
-                            '<span class="text-xs font-semibold uppercase tracking-wider opacity-80">Klasifikasi Risiko</span>' +
-                            '<strong class="text-xl tracking-tight">' + riskInfo.label + '</strong>' +
-                        '</div>' +
-                    '</div>';
-                document.getElementById('sectionKlasifikasi').classList.remove('hidden');
-            }
-
-            if (d.kesimpulan) {
-                document.getElementById('detailKesimpulanText').textContent = d.kesimpulan;
-                document.getElementById('sectionKesimpulan').classList.remove('hidden');
-            }
-        }
-
-        function renderRiskBadge(suffix, value) {
-            const info = RISK_CONFIG[value];
-            if (!info) return;
-
-            const badge = document.getElementById('badge' + suffix);
-            badge.textContent = info.icon + ' ' + info.label;
-            badge.className = 'inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-bold tracking-wide ' + info.badge;
-
-            const card = document.getElementById('risk' + suffix);
-            card.classList.remove('border-gray-200');
-            card.classList.add(info.cardBorder);
-            info.cardBg.forEach(c => card.classList.add(c));
-
-            document.getElementById('riskBar' + suffix).className =
-                'absolute top-0 left-0 right-0 h-1 ' + info.bar;
-
-            const iconWrap = document.getElementById('iconWrap' + suffix);
-            iconWrap.classList.remove('from-purple-100', 'to-purple-200');
-            info.iconWrap.forEach(c => iconWrap.classList.add(c));
-        }
-
-        function computeOverallRisk(maternal, janin, penyulit) {
-            const levels = { 'RENDAH': 1, 'SEDANG': 2, 'TINGGI': 3 };
-            const map = { 1: 'RENDAH', 2: 'SEDANG', 3: 'TINGGI' };
-            return map[Math.max(levels[maternal] || 1, levels[janin] || 1, levels[penyulit] || 1)];
-        }
-
-        window.hapusData = async function(id) {
-            if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
-            try {
-                const response = await fetch('api/skrining/delete.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ id: id })
-                });
-                const result = await response.json();
-                if (!response.ok || result.error) {
-                    throw new Error(result.error || 'Gagal menghapus');
-                }
-                alert('Data berhasil dihapus.');
-                window.location.href = BACK_URL;
-            } catch (error) {
-                alert('Gagal menghapus: ' + error.message);
-            }
-        };
-
-        loadDetail();
-    })();
     </script>
+    <script src="assets/js/detail-skrining-admisi.js"></script>
 </body>
 </html>

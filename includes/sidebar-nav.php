@@ -44,12 +44,12 @@ $navGroups = [
                 'label' => 'Data Skrining Admisi',
                 'page' => 'data-skrining-admisi-rs'
             ],
-            [
-                'href' => 'checklist-resusitasi.php',
-                'icon' => '✅',
-                'label' => 'Checklist Resusitasi',
-                'page' => 'checklist-resusitasi'
-            ],
+            // [
+            //     'href' => 'checklist-resusitasi.php',
+            //     'icon' => '✅',
+            //     'label' => 'Checklist Resusitasi',
+            //     'page' => 'checklist-resusitasi'
+            // ],
             [
                 'type' => 'item',
                 'href' => 'peristi-bayi.php',

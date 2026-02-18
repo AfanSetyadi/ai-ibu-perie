@@ -35,31 +35,21 @@ $username = getCurrentUsername();
             
             <!-- Dashboard Content -->
             <div class="dashboard-content" id="dashboardContent">
-                <!-- Stats Cards -->
+                <!-- Quick Action Cards -->
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">👶</div>
+                    <a class="stat-card" href="form-skrining-admisi-rs.php">
                         <div class="stat-info">
-                            <h3>Total Pasien</h3>
-                            <p class="stat-number" id="totalPatients">0</p>
+                            <h3>Isi form skrining admisi RS</h3>
+                            <p class="stat-number">Form Skrining Admisi (RS)</p>
                         </div>
-                    </div>
+                    </a>
                     
-                    <div class="stat-card">
-                        <div class="stat-icon">💙</div>
+                    <a class="stat-card" href="form-skrining-admisi-puskesmas.php">
                         <div class="stat-info">
-                            <h3>MNE Aktif</h3>
-                            <p class="stat-number" id="activeMNE">0</p>
+                            <h3>Isi form skrining admisi Puskesmas</h3>
+                            <p class="stat-number">Form Skrining Admisi (Puskesmas)</p>
                         </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">📊</div>
-                        <div class="stat-info">
-                            <h3>Quality Score</h3>
-                            <p class="stat-number" id="qualityScore">0%</p>
-                        </div>
-                    </div>
+                    </a>
                 </div>
                 
                 <!-- Main Content Grid -->
@@ -110,12 +100,12 @@ $username = getCurrentUsername();
                                     </div>
                                 </div>
                             </div>
-                            <p>Analisis dan peningkatan kualitas perawatan perinatal</p>
+                            <p>Cek dokumen untuk mendukung analisis dan peningkatan kualitas perawatan perinatal</p>
                             <a href="quality-improvement.php" class="btn-secondary" style="text-decoration: none; display: block; text-align: center;">Buka Modul</a>
                         </div>
                     </div>
                     
-                    <div class="content-card">
+                    <!-- <div class="content-card">
                         <div class="card-header">
                             <h3>Aktivitas Terkini</h3>
                         </div>
@@ -137,7 +127,7 @@ $username = getCurrentUsername();
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </main>

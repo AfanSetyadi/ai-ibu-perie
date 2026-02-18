@@ -140,7 +140,7 @@ if ($id <= 0) {
                             </div>
                         </div>
 
-                        <div class="detail-actions-wrap flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mt-4 pt-6 border-t-2 border-purple-100">
+                        <!-- <div class="detail-actions-wrap flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mt-4 pt-6 border-t-2 border-purple-100">
                             <a href="data-skrining-admisi-puskesmas.php" class="inline-flex items-center justify-center gap-2 py-2.5 px-5 bg-gray-100 text-gray-600 border-2 border-gray-200 rounded-xl text-sm font-semibold no-underline cursor-pointer transition-all duration-200 hover:bg-gray-200 hover:border-gray-300 hover:-translate-x-1">
                                 <span>←</span> Kembali ke Data
                             </a>
@@ -152,7 +152,7 @@ if ($id <= 0) {
                                     <span>🗑️</span> Hapus Data
                                 </button>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
