@@ -43,6 +43,13 @@ $username = getCurrentUsername();
                             <p class="stat-number">Form Skrining Admisi (RS)</p>
                         </div>
                     </a>
+
+                    <a class="stat-card" href="form-skrining-hpp.php">
+                        <div class="stat-info">
+                            <h3>Isi form skrining HPP</h3>
+                            <p class="stat-number">Form Skrining HPP (RS)</p>
+                        </div>
+                    </a>
                     
                     <a class="stat-card" href="form-skrining-admisi-puskesmas.php">
                         <div class="stat-info">
@@ -50,6 +57,7 @@ $username = getCurrentUsername();
                             <p class="stat-number">Form Skrining Admisi (Puskesmas)</p>
                         </div>
                     </a>
+                    
                 </div>
                 
                 <!-- Main Content Grid -->
