@@ -11,7 +11,7 @@ $username = getCurrentUsername();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Skrining Admisi (Rumah Sakit) - IBu PeriE</title>
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/peristi-bayi.css">
+    <link rel="stylesheet" href="assets/css/peristi-bayi.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/skrining-admisi.css">
 </head>
 <body class="dashboard-page">
@@ -119,9 +119,10 @@ $username = getCurrentUsername();
             dataPageUrl: 'data-skrining-admisi-rs.php',
             formPageUrl: 'form-skrining-admisi-rs.php',
             storageKey: 'skriningAdmisiDataRS',
-            tipeFaskes: 'rs'
+            tipeFaskes: 'rs',
+            waNotifNumbers: ['6287882925049', '6281703634299']
         };
     </script>
-    <script src="assets/js/skrining-admisi.js"></script>
+    <script src="assets/js/skrining-admisi.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

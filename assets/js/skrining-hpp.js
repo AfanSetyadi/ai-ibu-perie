@@ -296,6 +296,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        window._hppTableData = {};
+
         var badgeClass = {
             'RENDAH': 'status-active',
             'SEDANG': 'status-pending',
@@ -305,6 +307,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         tableBody.innerHTML = data.map(function (row, idx) {
             var tgl = new Date(row.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+
+            window._hppTableData[row.id] = {
+                nama_ibu: row.nama_ibu,
+                no_rm: row.no_rm,
+                tanggal: row.tanggal,
+                diagnosa_ibu: row.diagnosa_ibu,
+                klasifikasi: row.klasifikasi_risiko
+            };
+
+            var waBtn = row.klasifikasi_risiko === 'TINGGI'
+                ? '<button class="btn-action btn-wa" id="btnWaHpp_' + row.id + '" onclick="sendWaNotifHPP(' + row.id + ')">📲 Notif WA</button>'
+                : '';
+
             return '<tr data-id="' + row.id + '">' +
                 '<td>' + (idx + 1) + '</td>' +
                 '<td>' + tgl + '</td>' +
@@ -315,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<td>' +
                     '<button class="btn-action btn-view" onclick="viewHPPDetail(' + row.id + ')">👁️ Lihat</button>' +
                     '<button class="btn-action btn-delete" onclick="deleteHPPData(' + row.id + ')">🗑️ Hapus</button>' +
+                    waBtn +
                 '</td>' +
                 '</tr>';
         }).join('');
@@ -385,5 +401,59 @@ async function deleteHPPData(id) {
 
     } catch (error) {
         window.showNotification('Gagal menghapus: ' + error.message, 'error');
+    }
+}
+
+async function sendWaNotifHPP(id) {
+    var hppConfig = window.HPP_CONFIG || {};
+    var numbers = hppConfig.waNotifNumbers || [];
+    var rowData = window._hppTableData ? window._hppTableData[id] : null;
+
+    if (!rowData || numbers.length === 0) {
+        window.showNotification('Data atau konfigurasi nomor WA tidak ditemukan.', 'error');
+        return;
+    }
+
+    if (!confirm('Kirim notifikasi WhatsApp untuk pasien ' + rowData.nama_ibu + '?')) return;
+
+    var btn = document.getElementById('btnWaHpp_' + id);
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Mengirim...';
+    }
+
+    var d = new Date(rowData.tanggal);
+    var tgl = ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+
+    var badgeLabel = { 'RENDAH': 'Rendah', 'SEDANG': 'Sedang', 'TINGGI': 'Tinggi' };
+
+    var payload = numbers.map(function(no_hp) {
+        return {
+            no_hp: no_hp,
+            nama_pasien: rowData.nama_ibu,
+            no_rm: rowData.no_rm,
+            tgl: tgl,
+            diagnosa: rowData.diagnosa_ibu,
+            status_risiko: badgeLabel[rowData.klasifikasi] || rowData.klasifikasi
+        };
+    });
+
+    try {
+        var response = await fetch('https://api.rsudrtnotopuro.co.id/rest_wa/ibu-perie/notifikasi-skrining-admisi-hpp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        window.showNotification('Notifikasi WhatsApp berhasil dikirim!', 'success');
+    } catch (error) {
+        window.showNotification('Gagal mengirim notifikasi: ' + error.message, 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '📲 Notif WA';
+        }
     }
 }

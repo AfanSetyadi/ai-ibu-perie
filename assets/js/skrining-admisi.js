@@ -492,6 +492,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        window._skriningTableData = {};
+
         const badgeClass = {
             'RENDAH': 'status-active',
             'SEDANG': 'status-pending',
@@ -509,6 +511,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 RISK_LEVELS[row.aspek_penyulit] || 1
             );
             const klasifikasi = RISK_MAP[riskScore];
+
+            window._skriningTableData[row.id] = {
+                nama_ibu: row.nama_ibu,
+                no_rm: row.no_rm,
+                tanggal: row.tanggal,
+                diagnosa_ibu: row.diagnosa_ibu,
+                klasifikasi: klasifikasi
+            };
+
+            const waBtn = klasifikasi === 'TINGGI'
+                ? `<button class="btn-action btn-wa" id="btnWa_${row.id}" onclick="sendWaNotifSkrining(${row.id})">📲 Notif WA</button>`
+                : '';
+
             return `<tr data-id="${row.id}">
                 <td>${idx + 1}</td>
                 <td>${tgl}</td>
@@ -519,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>
                     <button class="btn-action btn-view" onclick="viewDetail(${row.id})">👁️ Lihat</button>
                     <button class="btn-action btn-delete" onclick="deleteData(${row.id})">🗑️ Hapus</button>
+                    ${waBtn}
                 </td>
             </tr>`;
         }).join('');
@@ -602,5 +618,59 @@ async function deleteData(id) {
 
 function editData(id) {
     window.showNotification('Fitur edit akan segera tersedia.', 'info');
+}
+
+async function sendWaNotifSkrining(id) {
+    const config = window.SKRINING_CONFIG || {};
+    const numbers = config.waNotifNumbers || [];
+    const rowData = window._skriningTableData?.[id];
+
+    if (!rowData || numbers.length === 0) {
+        window.showNotification('Data atau konfigurasi nomor WA tidak ditemukan.', 'error');
+        return;
+    }
+
+    if (!confirm('Kirim notifikasi WhatsApp untuk pasien ' + rowData.nama_ibu + '?')) return;
+
+    const btn = document.getElementById('btnWa_' + id);
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Mengirim...';
+    }
+
+    const d = new Date(rowData.tanggal);
+    const tgl = ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+
+    const badgeLabel = { 'RENDAH': 'Rendah', 'SEDANG': 'Sedang', 'TINGGI': 'Tinggi' };
+
+    const payload = numbers.map(function(no_hp) {
+        return {
+            no_hp: no_hp,
+            nama_pasien: rowData.nama_ibu,
+            no_rm: rowData.no_rm,
+            tgl: tgl,
+            diagnosa: rowData.diagnosa_ibu,
+            status_risiko: badgeLabel[rowData.klasifikasi] || rowData.klasifikasi
+        };
+    });
+
+    try {
+        const response = await fetch('https://api.rsudrtnotopuro.co.id/rest_wa/ibu-perie/notifikasi-skrining-admisi-hpp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        window.showNotification('Notifikasi WhatsApp berhasil dikirim!', 'success');
+    } catch (error) {
+        window.showNotification('Gagal mengirim notifikasi: ' + error.message, 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = '📲 Notif WA';
+        }
+    }
 }
 

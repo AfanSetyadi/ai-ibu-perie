@@ -11,7 +11,7 @@ $username = getCurrentUsername();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Skrining HPP - IBu PeriE</title>
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/peristi-bayi.css">
+    <link rel="stylesheet" href="assets/css/peristi-bayi.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/skrining-admisi.css">
     <link rel="stylesheet" href="assets/css/skrining-hpp.css">
 </head>
@@ -107,6 +107,11 @@ $username = getCurrentUsername();
     </div>
 
     <script src="assets/js/dashboard.js"></script>
-    <script src="assets/js/skrining-hpp.js"></script>
+    <script>
+        window.HPP_CONFIG = {
+            waNotifNumbers: ['6287849096112']
+        };
+    </script>
+    <script src="assets/js/skrining-hpp.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>

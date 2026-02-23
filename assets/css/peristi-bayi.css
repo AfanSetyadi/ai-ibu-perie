@@ -635,6 +635,20 @@
     background: #0D9488;
 }
 
+.btn-wa {
+    background: #25D366;
+    color: var(--white);
+}
+
+.btn-wa:hover {
+    background: #1DA851;
+}
+
+.btn-wa:disabled {
+    background: #93E9B8;
+    cursor: not-allowed;
+}
+
 /* Page Header with Add Button */
 .page-header {
     display: flex;
