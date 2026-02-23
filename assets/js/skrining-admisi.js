@@ -443,8 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== Data Page: Load & Render =====
     const tableBody = document.getElementById('tableBody');
     const searchInput = document.getElementById('searchInput');
-    const filterMaternal = document.getElementById('filterMaternal');
-    const filterJanin = document.getElementById('filterJanin');
+    const filterRisiko = document.getElementById('filterRisiko');
 
     let debounceTimer = null;
 
@@ -457,16 +456,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 debounceTimer = setTimeout(loadData, 300);
             });
         }
-        if (filterMaternal) filterMaternal.addEventListener('change', loadData);
-        if (filterJanin) filterJanin.addEventListener('change', loadData);
+        if (filterRisiko) filterRisiko.addEventListener('change', loadData);
     }
 
     async function loadData() {
         const params = new URLSearchParams({ tipe_faskes: config.tipeFaskes });
 
         if (searchInput?.value) params.set('search', searchInput.value);
-        if (filterMaternal?.value) params.set('maternal', filterMaternal.value);
-        if (filterJanin?.value) params.set('janin', filterJanin.value);
+        if (filterRisiko?.value) params.set('risiko', filterRisiko.value);
 
         try {
             const response = await fetch('api/skrining/list.php?' + params.toString(), {
@@ -483,7 +480,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         } catch (error) {
             console.error('Load error:', error);
-            tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;">Gagal memuat data dari server.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Gagal memuat data dari server.</td></tr>';
         }
     }
 
@@ -491,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!tableBody) return;
 
         if (!data || data.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;">Belum ada data skrining.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;">Belum ada data skrining.</td></tr>';
             return;
         }
 
@@ -504,15 +501,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         tableBody.innerHTML = data.map((row, idx) => {
             const tgl = new Date(row.tanggal).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const RISK_LEVELS = { 'RENDAH': 1, 'SEDANG': 2, 'TINGGI': 3 };
+            const RISK_MAP = { 1: 'RENDAH', 2: 'SEDANG', 3: 'TINGGI' };
+            const riskScore = Math.max(
+                RISK_LEVELS[row.aspek_maternal] || 1,
+                RISK_LEVELS[row.aspek_janin] || 1,
+                RISK_LEVELS[row.aspek_penyulit] || 1
+            );
+            const klasifikasi = RISK_MAP[riskScore];
             return `<tr data-id="${row.id}">
                 <td>${idx + 1}</td>
                 <td>${tgl}</td>
                 <td>${escapeHtml(row.no_rm)}</td>
                 <td>${escapeHtml(row.nama_ibu)}</td>
                 <td>${escapeHtml(row.diagnosa_ibu)}</td>
-                <td><span class="status-badge ${badgeClass[row.aspek_maternal] || ''}">${badgeLabel[row.aspek_maternal] || row.aspek_maternal}</span></td>
-                <td><span class="status-badge ${badgeClass[row.aspek_janin] || ''}">${badgeLabel[row.aspek_janin] || row.aspek_janin}</span></td>
-                <td><span class="status-badge ${badgeClass[row.aspek_penyulit] || ''}">${badgeLabel[row.aspek_penyulit] || row.aspek_penyulit}</span></td>
+                <td><span class="status-badge ${badgeClass[klasifikasi] || ''}">${badgeLabel[klasifikasi] || klasifikasi}</span></td>
                 <td>
                     <button class="btn-action btn-view" onclick="viewDetail(${row.id})">👁️ Lihat</button>
                     <button class="btn-action btn-delete" onclick="deleteData(${row.id})">🗑️ Hapus</button>

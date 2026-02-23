@@ -15,8 +15,7 @@ if (!in_array($tipeFaskes, ['rs', 'puskesmas'], true)) {
 }
 
 $search = trim($_GET['search'] ?? '');
-$filterMaternal = $_GET['maternal'] ?? '';
-$filterJanin = $_GET['janin'] ?? '';
+$filterRisiko = $_GET['risiko'] ?? '';
 $page = max(1, (int)($_GET['page'] ?? 1));
 $limit = min(100, max(10, (int)($_GET['limit'] ?? 50)));
 $offset = ($page - 1) * $limit;
@@ -35,13 +34,15 @@ try {
     }
 
     $validRisiko = ['RENDAH', 'SEDANG', 'TINGGI'];
-    if ($filterMaternal && in_array($filterMaternal, $validRisiko, true)) {
-        $where[] = "aspek_maternal = :maternal";
-        $params[':maternal'] = $filterMaternal;
-    }
-    if ($filterJanin && in_array($filterJanin, $validRisiko, true)) {
-        $where[] = "aspek_janin = :janin";
-        $params[':janin'] = $filterJanin;
+    $risikoMap = ['RENDAH' => 1, 'SEDANG' => 2, 'TINGGI' => 3];
+    if ($filterRisiko && in_array($filterRisiko, $validRisiko, true)) {
+        $risikoVal = $risikoMap[$filterRisiko];
+        $where[] = "GREATEST(
+            CASE aspek_maternal WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+            CASE aspek_janin WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+            CASE aspek_penyulit WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END
+        ) = :risiko";
+        $params[':risiko'] = $risikoVal;
     }
 
     $whereClause = implode(' AND ', $where);
@@ -66,13 +67,24 @@ try {
 
     $data = $stmt->fetchAll();
 
-    // Summary counts (unfiltered for this tipe_faskes)
     $summaryStmt = $db->prepare("
         SELECT 
             COUNT(*) as total,
-            COUNT(*) FILTER (WHERE aspek_maternal = 'RENDAH') as rendah,
-            COUNT(*) FILTER (WHERE aspek_maternal = 'SEDANG') as sedang,
-            COUNT(*) FILTER (WHERE aspek_maternal = 'TINGGI') as tinggi
+            COUNT(*) FILTER (WHERE GREATEST(
+                CASE aspek_maternal WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+                CASE aspek_janin WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+                CASE aspek_penyulit WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END
+            ) = 1) as rendah,
+            COUNT(*) FILTER (WHERE GREATEST(
+                CASE aspek_maternal WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+                CASE aspek_janin WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+                CASE aspek_penyulit WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END
+            ) = 2) as sedang,
+            COUNT(*) FILTER (WHERE GREATEST(
+                CASE aspek_maternal WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+                CASE aspek_janin WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END,
+                CASE aspek_penyulit WHEN 'TINGGI' THEN 3 WHEN 'SEDANG' THEN 2 ELSE 1 END
+            ) = 3) as tinggi
         FROM skrining_admisi 
         WHERE tipe_faskes = :tipe_faskes
     ");

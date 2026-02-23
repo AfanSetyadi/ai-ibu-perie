@@ -50,14 +50,8 @@ $username = getCurrentUsername();
                     <div class="search-box">
                         <input type="text" id="searchInput" placeholder="Cari berdasarkan nama ibu, No. RM, diagnosa...">
                     </div>
-                    <select class="filter-select" id="filterMaternal">
-                        <option value="">Semua Maternal</option>
-                        <option value="RENDAH">Rendah</option>
-                        <option value="SEDANG">Sedang</option>
-                        <option value="TINGGI">Tinggi</option>
-                    </select>
-                    <select class="filter-select" id="filterJanin">
-                        <option value="">Semua Janin</option>
+                    <select class="filter-select" id="filterRisiko">
+                        <option value="">Semua Risiko</option>
                         <option value="RENDAH">Rendah</option>
                         <option value="SEDANG">Sedang</option>
                         <option value="TINGGI">Tinggi</option>
@@ -74,14 +68,12 @@ $username = getCurrentUsername();
                                 <th>No. RM</th>
                                 <th>Nama Ibu</th>
                                 <th>Diagnosa Ibu</th>
-                                <th>Aspek Maternal</th>
-                                <th>Aspek Janin</th>
-                                <th>Aspek Penyulit</th>
+                                <th>Klasifikasi Risiko</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody">
-                            <tr><td colspan="9" style="text-align:center;padding:2rem;">Memuat data...</td></tr>
+                            <tr><td colspan="7" style="text-align:center;padding:2rem;">Memuat data...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -98,21 +90,21 @@ $username = getCurrentUsername();
                     <div class="summary-card summary-low">
                         <span class="summary-icon">🟢</span>
                         <div class="summary-info">
-                            <h4>Maternal Rendah</h4>
+                            <h4>Risiko Rendah</h4>
                             <p class="summary-number" id="totalRendah">0</p>
                         </div>
                     </div>
                     <div class="summary-card summary-med">
                         <span class="summary-icon">🟡</span>
                         <div class="summary-info">
-                            <h4>Maternal Sedang</h4>
+                            <h4>Risiko Sedang</h4>
                             <p class="summary-number" id="totalSedang">0</p>
                         </div>
                     </div>
                     <div class="summary-card summary-high">
                         <span class="summary-icon">🔴</span>
                         <div class="summary-info">
-                            <h4>Maternal Tinggi</h4>
+                            <h4>Risiko Tinggi</h4>
                             <p class="summary-number" id="totalTinggi">0</p>
                         </div>
                     </div>
