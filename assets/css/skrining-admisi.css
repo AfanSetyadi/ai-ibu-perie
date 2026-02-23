@@ -1,5 +1,18 @@
 /* Skrining Admisi Specific Styles */
 
+/* Action Buttons (vertical stack) */
+.action-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: stretch;
+}
+
+.action-btns .btn-action {
+    width: 100%;
+    white-space: nowrap;
+}
+
 /* Form Section Subtitle */
 .form-section-subtitle {
     font-size: 1.1rem;

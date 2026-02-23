@@ -328,9 +328,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 '<td>' + escapeHtml(row.diagnosa_ibu) + '</td>' +
                 '<td><span class="status-badge ' + (badgeClass[row.klasifikasi_risiko] || '') + '">' + (badgeLabel[row.klasifikasi_risiko] || row.klasifikasi_risiko) + '</span></td>' +
                 '<td>' +
-                    '<button class="btn-action btn-view" onclick="viewHPPDetail(' + row.id + ')">👁️ Lihat</button>' +
-                    '<button class="btn-action btn-delete" onclick="deleteHPPData(' + row.id + ')">🗑️ Hapus</button>' +
-                    waBtn +
+                    '<div class="action-btns">' +
+                        '<button class="btn-action btn-view" onclick="viewHPPDetail(' + row.id + ')">👁️ Lihat</button>' +
+                        '<button class="btn-action btn-delete" onclick="deleteHPPData(' + row.id + ')">🗑️ Hapus</button>' +
+                        waBtn +
+                    '</div>' +
                 '</td>' +
                 '</tr>';
         }).join('');

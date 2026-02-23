@@ -532,9 +532,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${escapeHtml(row.diagnosa_ibu)}</td>
                 <td><span class="status-badge ${badgeClass[klasifikasi] || ''}">${badgeLabel[klasifikasi] || klasifikasi}</span></td>
                 <td>
-                    <button class="btn-action btn-view" onclick="viewDetail(${row.id})">👁️ Lihat</button>
-                    <button class="btn-action btn-delete" onclick="deleteData(${row.id})">🗑️ Hapus</button>
-                    ${waBtn}
+                    <div class="action-btns">
+                        <button class="btn-action btn-view" onclick="viewDetail(${row.id})">👁️ Lihat</button>
+                        <button class="btn-action btn-delete" onclick="deleteData(${row.id})">🗑️ Hapus</button>
+                        ${waBtn}
+                    </div>
                 </td>
             </tr>`;
         }).join('');
