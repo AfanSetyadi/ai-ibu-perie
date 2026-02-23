@@ -66,6 +66,30 @@ try {
     $db->exec("CREATE INDEX IF NOT EXISTS idx_checklist_scores ON checklist_resusitasi USING GIN (scores)");
     output("Indexes created/verified.", $isWeb);
 
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS skrining_hpp (
+            id SERIAL PRIMARY KEY,
+            nama_ibu VARCHAR(255) NOT NULL,
+            no_rm VARCHAR(50) NOT NULL,
+            tanggal DATE NOT NULL,
+            diagnosa_ibu TEXT NOT NULL,
+            faktor_rendah JSONB NOT NULL DEFAULT '[]',
+            faktor_medium JSONB NOT NULL DEFAULT '[]',
+            faktor_tinggi JSONB NOT NULL DEFAULT '[]',
+            klasifikasi_risiko VARCHAR(20) NOT NULL CHECK (klasifikasi_risiko IN ('RENDAH', 'SEDANG', 'TINGGI')),
+            rekomendasi TEXT,
+            created_by VARCHAR(100),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ");
+    output("Table 'skrining_hpp' created/verified.", $isWeb);
+
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_hpp_tanggal ON skrining_hpp (tanggal DESC)");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_hpp_no_rm ON skrining_hpp (no_rm)");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_hpp_klasifikasi ON skrining_hpp (klasifikasi_risiko)");
+    output("HPP indexes created/verified.", $isWeb);
+
     output("Migration completed successfully!", $isWeb);
 
 } catch (PDOException $e) {

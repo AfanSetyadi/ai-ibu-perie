@@ -1,0 +1,292 @@
+/* ===== HPP Screening Specific Styles ===== */
+
+/* 3-Column Screening Layout */
+.hpp-screening-table {
+    margin-top: 0.5rem;
+}
+
+.hpp-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Column Base */
+.hpp-column {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid #E5E7EB;
+    background: #FFFFFF;
+    transition: box-shadow 0.3s ease;
+}
+
+.hpp-column:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Column Headers */
+.hpp-col-header {
+    padding: 1rem 1.25rem;
+    text-align: center;
+}
+
+.hpp-col-header h5 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem;
+    line-height: 1.3;
+}
+
+.hpp-col-header p {
+    font-size: 0.72rem;
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+    opacity: 0.85;
+}
+
+.hpp-risk-label {
+    display: inline-block;
+    padding: 0.2rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+/* Header Colors */
+.hpp-header-rendah {
+    background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+    border-bottom: 2px solid #6EE7B7;
+    color: #065F46;
+}
+
+.hpp-header-rendah .hpp-risk-label {
+    background: #065F46;
+    color: #FFFFFF;
+}
+
+.hpp-header-medium {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    border-bottom: 2px solid #FCD34D;
+    color: #92400E;
+}
+
+.hpp-header-medium .hpp-risk-label {
+    background: #92400E;
+    color: #FFFFFF;
+}
+
+.hpp-header-tinggi {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    border-bottom: 2px solid #FCA5A5;
+    color: #991B1B;
+}
+
+.hpp-header-tinggi .hpp-risk-label {
+    background: #991B1B;
+    color: #FFFFFF;
+}
+
+/* Column Body */
+.hpp-col-body {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Checkbox Items */
+.hpp-checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #374151;
+}
+
+.hpp-checkbox-item:hover {
+    background: #F9FAFB;
+}
+
+.hpp-checkbox-item input[type="checkbox"] {
+    display: none;
+}
+
+.hpp-check-custom {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border: 2px solid #D1D5DB;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-top: 1px;
+    background: #FFFFFF;
+}
+
+.hpp-checkbox-item input[type="checkbox"]:checked + .hpp-check-custom {
+    border-color: #6B46C1;
+    background: #6B46C1;
+}
+
+.hpp-checkbox-item input[type="checkbox"]:checked + .hpp-check-custom::after {
+    content: '✓';
+    color: #FFFFFF;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.hpp-col-rendah .hpp-checkbox-item input[type="checkbox"]:checked + .hpp-check-custom {
+    border-color: #059669;
+    background: #059669;
+}
+
+.hpp-col-medium .hpp-checkbox-item input[type="checkbox"]:checked + .hpp-check-custom {
+    border-color: #D97706;
+    background: #D97706;
+}
+
+.hpp-col-tinggi .hpp-checkbox-item input[type="checkbox"]:checked + .hpp-check-custom {
+    border-color: #DC2626;
+    background: #DC2626;
+}
+
+.hpp-checkbox-item input[type="checkbox"]:checked ~ span:last-child {
+    font-weight: 600;
+}
+
+/* Special auto-checked item */
+.hpp-special-item {
+    border-top: 1px dashed #E5E7EB;
+    margin-top: 0.25rem;
+    padding-top: 0.75rem;
+    opacity: 0.7;
+    cursor: default;
+}
+
+.hpp-special-item.auto-active {
+    opacity: 1;
+    background: #FEF2F2;
+    border-radius: 8px;
+}
+
+/* Risk Bar */
+.hpp-risk-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 0.25rem;
+}
+
+.hpp-risk-bar-segment {
+    flex: 1;
+    transition: opacity 0.3s ease;
+}
+
+.hpp-bar-green { background: #34D399; }
+.hpp-bar-yellow { background: #FBBF24; }
+.hpp-bar-red { background: #F87171; }
+
+/* Rekomendasi AI Textarea */
+#rekomendasiAI {
+    min-height: 80px;
+    max-height: 600px;
+    overflow-y: auto;
+    resize: none;
+    transition: height 0.2s ease;
+}
+
+/* ===== Detail Page: Faktor Risiko Display ===== */
+.hpp-detail-factors {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hpp-factor-group {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #E5E7EB;
+}
+
+.hpp-factor-group-header {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hpp-factor-group-header.factor-rendah {
+    background: linear-gradient(135deg, #D1FAE5, #A7F3D0);
+    color: #065F46;
+}
+
+.hpp-factor-group-header.factor-medium {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
+}
+
+.hpp-factor-group-header.factor-tinggi {
+    background: linear-gradient(135deg, #FEE2E2, #FECACA);
+    color: #991B1B;
+}
+
+.hpp-factor-list {
+    padding: 0.75rem 1.25rem;
+    list-style: none;
+    margin: 0;
+}
+
+.hpp-factor-list li {
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    color: #374151;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.4;
+}
+
+.hpp-factor-list li::before {
+    content: '•';
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.hpp-factor-list li + li {
+    border-top: 1px solid #F3F4F6;
+}
+
+.hpp-factor-empty {
+    padding: 1rem 1.25rem;
+    color: #9CA3AF;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+    .hpp-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media print {
+    .top-header, .sidebar, .detail-page-back,
+    .detail-page-actions-v2 { display: none !important; }
+    .dashboard-wrapper { display: block; }
+    .main-content { padding: 0; margin: 0; }
+    .peristi-content { box-shadow: none; padding: 0; }
+    .hpp-columns { grid-template-columns: repeat(3, 1fr); }
+}

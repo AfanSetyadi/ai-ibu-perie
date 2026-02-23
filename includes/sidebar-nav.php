@@ -11,6 +11,9 @@ $pageMap = [
     'form-skrining-admisi-rs.php' => 'form-skrining-admisi-rs',
     'data-skrining-admisi-rs.php' => 'data-skrining-admisi-rs',
     'checklist-resusitasi.php' => 'checklist-resusitasi',
+    'form-skrining-hpp.php' => 'form-skrining-hpp',
+    'data-skrining-hpp.php' => 'data-skrining-hpp',
+    'detail-skrining-hpp.php' => 'detail-skrining-hpp',
     'form-skrining-admisi-puskesmas.php' => 'form-skrining-admisi-puskesmas',
     'data-skrining-admisi-puskesmas.php' => 'data-skrining-admisi-puskesmas'
 ];
@@ -50,6 +53,18 @@ $navGroups = [
             //     'label' => 'Checklist Resusitasi',
             //     'page' => 'checklist-resusitasi'
             // ],
+            [
+                'href' => 'form-skrining-hpp.php',
+                'icon' => '🩸',
+                'label' => 'Form Skrining HPP',
+                'page' => 'form-skrining-hpp'
+            ],
+            [
+                'href' => 'data-skrining-hpp.php',
+                'icon' => '📁',
+                'label' => 'Data Skrining HPP',
+                'page' => 'data-skrining-hpp'
+            ],
             [
                 'type' => 'item',
                 'href' => 'peristi-bayi.php',
